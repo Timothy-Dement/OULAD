@@ -17,12 +17,11 @@ for module in modules:
 
     module_assessments = assessments[assessments['code_module'] == module]
     module_courses = courses[courses['code_module'] == module]
+    module_student_assessment = student_assessment[student_assessment['id_assessment'].isin(module_assessments['id_assessment'])]
     module_student_info = student_info[student_info['code_module'] == module]
     module_student_registration = student_registration[student_registration['code_module'] == module]
     module_student_vle = student_vle[student_vle['code_module'] == module]
     module_vle = vle[vle['code_module'] == module]
-    module_student_assessment = student_assessment[(student_assessment['id_student'].isin(
-        module_student_registration['id_student']) & student_assessment['id_assessment'].isin(module_assessments['id_assessment']))]
 
     print(f'{module}-Assessments:         \t{len(module_assessments.index)}')
     print(f'{module}-Courses:             \t{len(module_courses.index)}')
@@ -34,8 +33,6 @@ for module in modules:
 
     if not os.path.exists(f'./data/{module.lower()}'):
         os.mkdir(f'./data/{module.lower()}')
-
-    # index False?
 
     module_assessments.to_csv(f'./data/{module.lower()}/{module.lower()}_assessments.csv', index=False)
     module_courses.to_csv(f'./data/{module.lower()}/{module.lower()}_courses.csv', index=False)

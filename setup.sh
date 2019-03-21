@@ -1,12 +1,17 @@
 #!/bin/bash
 
+if [ -f data.zip ]
+    then rm -rf data.zip
+fi
 
-# check for zip, folder first
-# delete if present
-# download
-# unzip
+if [ -d data ]
+    then rm -rf data
+fi
 
 curl -o data.zip https://analyse.kmi.open.ac.uk/open_dataset/download
 unzip data.zip -d data
 
-# Run preprocessing scripts
+python split.py
+python extract_assessments.py
+# extract_student_assessment.py
+# join.py

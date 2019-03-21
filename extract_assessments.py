@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-modules = ['aaa']
+modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg']
 
 for mod in modules:
 

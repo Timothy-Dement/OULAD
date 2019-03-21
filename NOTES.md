@@ -36,6 +36,8 @@ Only affects 1,915 out of 18,941 records in ccc_student_assessment.csv (~10%) an
 
 Overall, this affects 2,866 out of 173,913 records in the original studentAssessment.csv file (~1%).
 
+- There ARE vle interactions on Day Zero
+
 # QUESTIONS
 
 - Problem with training on future and testing on past?

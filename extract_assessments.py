@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-modules = ['bbb']
+modules = ['aaa']
 
 for mod in modules:
 
@@ -15,8 +15,10 @@ for mod in modules:
     new_columns = pd.DataFrame(columns=['id_assessment',
                                         'days_start',
                                         'previous_days_start',
+                                        'previous_days_end',
                                         'interval_start',
-                                        'previous_interval_start'])
+                                        'previous_interval_start',
+                                        'previous_interval_end'])
 
     presentations = mod_assessments['code_presentation'].unique()
 
@@ -25,14 +27,17 @@ for mod in modules:
         pres_assessments = mod_assessments[mod_assessments['code_presentation'] == pres]
 
         asmt_due_dates = pres_assessments[['id_assessment', 'date']]
+        asmt_due_dates = asmt_due_dates[np.isfinite(asmt_due_dates['date'])]
         asmt_due_dates = asmt_due_dates.sort_values(by=['date'])
         asmt_due_dates = asmt_due_dates.reset_index(drop=True)
 
         asmt_due_dates['days_start'] = float('NaN')
         asmt_due_dates['previous_days_start'] = float('NaN')
+        asmt_due_dates['previous_days_end'] = float('NaN')
 
         asmt_due_dates['interval_start'] = float('NaN')
         asmt_due_dates['previous_interval_start'] = float('NaN')
+        asmt_due_dates['previous_interval_end'] = float('NaN')
 
         num_days = 14
 
@@ -41,28 +46,25 @@ for mod in modules:
             if np.isfinite(row['date']):
 
                 if row['date'] - num_days > 0:
-                    asmt_due_dates.at[index,
-                                      'days_start'] = row['date'] - num_days
+                    asmt_due_dates.at[index, 'days_start'] = row['date'] - num_days
                 else:
                     asmt_due_dates.at[index, 'days_start'] = 0
 
                 if index > 0:
-                    asmt_due_dates.at[index,
-                                      'interval_start'] = asmt_due_dates.at[index - 1, 'date']
+                    asmt_due_dates.at[index, 'interval_start'] = asmt_due_dates.at[index - 1, 'date']
                 else:
                     asmt_due_dates.at[index, 'interval_start'] = 0
 
                 if index > 0:
-                    asmt_due_dates.at[index,
-                                      'previous_days_start'] = asmt_due_dates.at[index - 1, 'days_start']
-                    asmt_due_dates.at[index,
-                                      'previous_interval_start'] = asmt_due_dates.at[index - 1, 'interval_start']
+                    asmt_due_dates.at[index, 'previous_days_start'] = asmt_due_dates.at[index - 1, 'days_start']
+                    asmt_due_dates.at[index, 'previous_days_end'] = asmt_due_dates.at[index - 1, 'date']
+                    asmt_due_dates.at[index, 'previous_interval_start'] = asmt_due_dates.at[index - 1, 'interval_start']
+                    asmt_due_dates.at[index, 'previous_interval_end'] = asmt_due_dates.at[index - 1, 'date']
                 else:
-                    asmt_due_dates.at[index, 'previous_days_start'] = 0
-                    asmt_due_dates.at[index, 'previous_interval_start'] = 0
+                    asmt_due_dates.at[index, 'previous_days_start'] = float('NaN')
+                    asmt_due_dates.at[index, 'previous_interval_start'] = float('NaN')
 
         new_columns = new_columns.append(asmt_due_dates.drop(columns=['date']), ignore_index=True)
 
-    # print(mod_assessments)
-    # print(new_columns)
-    print(pd.merge(mod_assessments, new_columns, on=['id_assessment']))
+    merged_mod_assessments = pd.merge(mod_assessments, new_columns, on=['id_assessment'])
+    merged_mod_assessments.to_csv(f'./data/{mod}/{mod}_assessments.csv', index=False)

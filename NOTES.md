@@ -1,6 +1,12 @@
 # NOTES
 
-- 1 - Neural Network, 2 - Decision Tree, 3 - Support Vector Machine, 4 - K-Nearest Neighbor, 5 - Naive Bayes
+- Classifiers used in Systematic Review:
+
+    1. Neural Network
+    2. Decision Tree
+    3. Support Vector Machine
+    4. K-Nearest Neighbor
+    5. Naive Bayes
 
 - Grouping attributes by type, testing combinations of attribute groups
 
@@ -10,7 +16,7 @@
 
 - Try aggregate vs. separated-by-courses
 
-- Missing due dates for some assessments:
+- Missing due dates for some assessments (all are "Exams"):
 
 | Code Modlue | Code Presentation | Id Assessment | Submissions |
 | ----------- | ----------------- | ------------- | ----------- |
@@ -26,24 +32,9 @@
 | CCC         | 2014J             | 40088         | no          |
 | DDD         | 2014J             | 25368         | **YES**     |
 
+Only affects 1,915 out of 18,941 records in ccc_student_assessment.csv (~10%) and 951 out of 30,865 records in ddd_student_assessment.csv (~3%).
 
-    - AAA:
-        - 1757 - pres 2013J
-        - 1763 - pres 2014J
-    - BBB:
-        - 14990 - pres 2013B
-        - 15002 - pres 
-        - 15014 - pres
-        - 15025 - pres
-    - CCC:
-        - 24290 (HAS SUBMISSIONS) - pres
-        - 40087 - pres
-        - 24299 (HAS SUBMISSIONS) - pres
-        - 40088 - pres
-    - DDD:
-        - 25368 (HAS SUBMISSIONS) - pres
-
-    - Set this to highest number in date
+Overall, this affects 2,866 out of 173,913 records in the original studentAssessment.csv file (~1%).
 
 # QUESTIONS
 
@@ -52,8 +43,13 @@
 - More by Annika Wolff?
 - How should data be separated?
 - Can we extract new features from VLE data?
+- Normalization?
+- Divide VLE interations into bins (assessment-date to assessment-date) or (x-days-before assessment-date)?
 
 # THREATS TO VALIDITY
 
-- No way to associate VLE resources with assessments with complete confidence
-- Missing dates for some assignments
+- No way to associate VLE resources with assessments with complete confidence (date assumption)
+- Missing due dates for some assessments
+- Assumes no overlap between assessments (possibly)
+- Assumes VLE interaction starts at zero for first assessment
+- Chose 2 weeks arbitrarily

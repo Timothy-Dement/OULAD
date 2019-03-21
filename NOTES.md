@@ -38,6 +38,8 @@ Overall, this affects 2,866 out of 173,913 records in the original studentAssess
 
 - There ARE vle interactions on Day Zero
 
+- WRITE SCRIPT TO GET INITIAL DATA, RUN PREPROCESSING
+
 # QUESTIONS
 
 - Problem with training on future and testing on past?

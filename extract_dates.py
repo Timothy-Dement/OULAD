@@ -1,9 +1,17 @@
+import os
 import numpy as np
 import pandas as pd
+import sys
+import time
 
 modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg']
 
 for mod in modules:
+
+    print(f'Extracting {mod.upper()} assessment periods ...', end=' ')
+    sys.stdout.flush()
+
+    mod_start = time.time()
 
     mod_assessments = pd.read_csv(f'./data/{mod}/{mod}_assessments.csv')
     mod_student_assessment = pd.read_csv(
@@ -67,4 +75,7 @@ for mod in modules:
         new_columns = new_columns.append(asmt_due_dates.drop(columns=['date']), ignore_index=True)
 
     merged_mod_assessments = pd.merge(mod_assessments, new_columns, on=['id_assessment'])
-    merged_mod_assessments.to_csv(f'./data/{mod}/{mod}_assessments.csv', index=False)
+    merged_mod_assessments.to_csv(f'./data/{mod}/{mod}_assessments_extracted.csv', index=False)
+
+    mod_end = time.time()
+    print(f'DONE [{round(mod_end - mod_start, 2)} sec]')

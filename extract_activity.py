@@ -1,14 +1,21 @@
+import os
 import numpy as np
 import pandas as pd
+import sys
+import time
 
 vle = pd.read_csv('./data/vle.csv')
 activity_types = vle['activity_type'].unique()
 
-modules = ['aaa']
+modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg']
 
 for mod in modules:
 
-    mod_assessments = pd.read_csv(f'./data/{mod}/{mod}_assessments.csv')
+    print(f'Extracting {mod.upper()} VLE activity ...')
+
+    mod_start = time.time()
+
+    mod_assessments = pd.read_csv(f'./data/{mod}/{mod}_assessments_extracted.csv')
     mod_student_assessment = pd.read_csv(f'./data/{mod}/{mod}_student_assessment.csv')
 
     mod_vle = pd.read_csv(f'./data/{mod}/{mod}_vle.csv')
@@ -29,11 +36,10 @@ for mod in modules:
         mod_student_assessment[f'{activity_type}_clicks_by_interval'] = 0
         mod_student_assessment[f'{activity_type}_clicks_by_interval_change'] = 0
 
-    # Loop through mod_student_assessment        
-
     for index, row in mod_student_assessment.iterrows():
 
-        print(index)
+        num_items = len(mod_student_assessment.index)
+        print(f'\t... {mod} {round((index / num_items) * 100, 2)}% complete')
         
         student_interactions = mod_student_vle[(mod_student_vle['id_student'] == row['id_student']) &
                                                (mod_student_vle['code_presentation'] == row['code_presentation'])]
@@ -94,4 +100,8 @@ for mod in modules:
             mod_student_assessment.at[index, f'{activity_type}_clicks_by_interval'] = by_interval_count
             mod_student_assessment.at[index, f'{activity_type}_clicks_by_interval_change'] = change_by_interval
 
-    # mod_student_assessment.to_csv(f'./data/{mod}_test.csv', index=False)
+    mod_student_assessment.to_csv(f'./data/{mod}/{mod}_student_assessment_extracted.csv', index=False)
+
+    mod_end = time.time()
+
+    print(f'DONE [{round(mod_end - mod_start, 2)} sec]')

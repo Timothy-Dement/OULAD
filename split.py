@@ -1,5 +1,7 @@
 import os
+import numpy as np
 import pandas as pd
+import sys
 import time
 
 assessments = pd.read_csv('./data/assessments.csv')
@@ -13,6 +15,11 @@ vle = pd.read_csv('./data/vle.csv')
 modules = ['AAA', 'BBB', 'CCC', 'DDD', 'EEE', 'FFF', 'GGG']
 
 for mod in modules:
+
+    print(f'Splitting {mod} ...', end=' ')
+    sys.stdout.flush()
+
+    mod_start = time.time()
 
     mod_assessments = assessments[assessments['code_module'] == mod]
     mod_courses = courses[courses['code_module'] == mod]
@@ -32,3 +39,7 @@ for mod in modules:
     mod_student_registration.to_csv(f'./data/{mod.lower()}/{mod.lower()}_student_registration.csv', index=False)
     mod_student_vle.to_csv(f'./data/{mod.lower()}/{mod.lower()}_student_vle.csv', index=False)
     mod_vle.to_csv(f'./data/{mod.lower()}/{mod.lower()}_vle.csv', index=False)
+
+    mod_end = time.time()
+
+    print(f'DONE [{round(mod_end - mod_start, 2)} sec]')

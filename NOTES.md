@@ -32,11 +32,11 @@
 | CCC         | 2014J             | 40088         | no          |
 | DDD         | 2014J             | 25368         | **YES**     |
 
-Only affects 1,915 out of 18,941 records in ccc_student_assessment.csv (~10%) and 951 out of 30,865 records in ddd_student_assessment.csv (~3%).
+Only affects 1,915 out of 18,941 records in ccc_student_assessment.csv (~10%) and 950 out of 30,865 records in ddd_student_assessment.csv (~3%).
 
-Overall, this affects 2,866 out of 173,913 records in the original studentAssessment.csv file (~1%).
+Overall, this affects 2,865 out of 173,913 records in the original studentAssessment.csv file (~1%).
 
-- There ARE vle interactions on Day Zero
+- There ARE vle interactions on Day Zero, and before Day Zero...
 
 - WRITE SCRIPT TO GET INITIAL DATA, RUN PREPROCESSING
 
@@ -55,5 +55,6 @@ Overall, this affects 2,866 out of 173,913 records in the original studentAssess
 - No way to associate VLE resources with assessments with complete confidence (date assumption)
 - Missing due dates for some assessments
 - Assumes no overlap between assessments (possibly)
-- Assumes VLE interaction starts at zero for first assessment
+- Assumes VLE interaction starts at Day Zero for first assessment (there is interaction before this)
 - Chose 2 weeks arbitrarily
+- date buckets are start < date <= end

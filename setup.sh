@@ -7,6 +7,6 @@ fi
 unzip data.zip -d data
 
 python split.py
-python extract_assessments.py
-# extract_student_assessment.py
+python extract_dates.py
+# extract_student_activity.py
 # join.py

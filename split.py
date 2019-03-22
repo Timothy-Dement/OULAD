@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import time
 
 assessments = pd.read_csv('./data/assessments.csv')
 courses = pd.read_csv('./data/courses.csv')
@@ -11,33 +12,23 @@ vle = pd.read_csv('./data/vle.csv')
 
 modules = ['AAA', 'BBB', 'CCC', 'DDD', 'EEE', 'FFF', 'GGG']
 
-for module in modules:
+for mod in modules:
 
-    print(f'\n+-----+\n| {module} |\n+-----+\n')
+    mod_assessments = assessments[assessments['code_module'] == mod]
+    mod_courses = courses[courses['code_module'] == mod]
+    mod_student_assessment = student_assessment[student_assessment['id_assessment'].isin(mod_assessments['id_assessment'])]
+    mod_student_info = student_info[student_info['code_module'] == mod]
+    mod_student_registration = student_registration[student_registration['code_module'] == mod]
+    mod_student_vle = student_vle[student_vle['code_module'] == mod]
+    mod_vle = vle[vle['code_module'] == mod]
 
-    module_assessments = assessments[assessments['code_module'] == module]
-    module_courses = courses[courses['code_module'] == module]
-    module_student_assessment = student_assessment[student_assessment['id_assessment'].isin(module_assessments['id_assessment'])]
-    module_student_info = student_info[student_info['code_module'] == module]
-    module_student_registration = student_registration[student_registration['code_module'] == module]
-    module_student_vle = student_vle[student_vle['code_module'] == module]
-    module_vle = vle[vle['code_module'] == module]
+    if not os.path.exists(f'./data/{mod.lower()}'):
+        os.mkdir(f'./data/{mod.lower()}')
 
-    print(f'{module}-Assessments:         \t{len(module_assessments.index)}')
-    print(f'{module}-Courses:             \t{len(module_courses.index)}')
-    print(f'{module}-StudentAssessment:   \t{len(module_student_assessment.index)}')
-    print(f'{module}-StudentInfo:         \t{len(module_student_info.index)}')
-    print(f'{module}-StudentRegistration: \t{len(module_student_registration.index)}')
-    print(f'{module}-StudentVle:          \t{len(module_student_vle.index)}')
-    print(f'{module}-Vle:                 \t{len(module_vle.index)}\n')
-
-    if not os.path.exists(f'./data/{module.lower()}'):
-        os.mkdir(f'./data/{module.lower()}')
-
-    module_assessments.to_csv(f'./data/{module.lower()}/{module.lower()}_assessments.csv', index=False)
-    module_courses.to_csv(f'./data/{module.lower()}/{module.lower()}_courses.csv', index=False)
-    module_student_assessment.to_csv(f'./data/{module.lower()}/{module.lower()}_student_assessment.csv', index=False)
-    module_student_info.to_csv(f'./data/{module.lower()}/{module.lower()}_student_info.csv', index=False)
-    module_student_registration.to_csv(f'./data/{module.lower()}/{module.lower()}_student_registration.csv', index=False)
-    module_student_vle.to_csv(f'./data/{module.lower()}/{module.lower()}_student_vle.csv', index=False)
-    module_vle.to_csv(f'./data/{module.lower()}/{module.lower()}_vle.csv', index=False)
+    mod_assessments.to_csv(f'./data/{mod.lower()}/{mod.lower()}_assessments.csv', index=False)
+    mod_courses.to_csv(f'./data/{mod.lower()}/{mod.lower()}_courses.csv', index=False)
+    mod_student_assessment.to_csv(f'./data/{mod.lower()}/{mod.lower()}_student_assessment.csv', index=False)
+    mod_student_info.to_csv(f'./data/{mod.lower()}/{mod.lower()}_student_info.csv', index=False)
+    mod_student_registration.to_csv(f'./data/{mod.lower()}/{mod.lower()}_student_registration.csv', index=False)
+    mod_student_vle.to_csv(f'./data/{mod.lower()}/{mod.lower()}_student_vle.csv', index=False)
+    mod_vle.to_csv(f'./data/{mod.lower()}/{mod.lower()}_vle.csv', index=False)

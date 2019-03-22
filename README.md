@@ -1,8 +1,8 @@
 # CSC 522-001: Automated Learning and Data Analysis
 
-Python 3.6.8
-Pandas 0.24.1
-Numpy 1.15.4
+- Python 3.6.8
+- Pandas 0.24.1
+- Numpy 1.15.4
 
 To run data preprocessing (not recommended due to length):
 ```bash
@@ -15,7 +15,7 @@ cd OULAD
 
 | Attribute | Source | Description |
 | --- | --- | --- |
-| `code_module` | From original set | Code name of the modules, which serves as the identifier. |
+| `code_module` | From original set | Code name of the module, which serves as the identifier. |
 | `code_presentation` | From original set | Code name of the presentation. It consists of the year and B for the presentation starting in February and J for the presentation starting in October. |
 | `id_student` | From original set | A unique identification number for the student. |
 | `gender` | From original set | The student's gender. |
@@ -27,7 +27,7 @@ cd OULAD
 | `studied_credits` | From original set | The total number of credits for the modules the student is currently studying. |
 | `disability` | From original set | Indicates whether the student has declared a disability. |
 | `id_assessment` | From original set | The identification number of the assessment. |
-| `assessment_type` | From original set | Type of assessment. Three tpes of assessments exits: Tutor Marked Assessment (TMA), Computer Marked Assessment (CMA), and Final Exam (Exam). |
+| `assessment_type` | From original set | Type of assessment. Three types of assessments exits: Tutor Marked Assessment (TMA), Computer Marked Assessment (CMA), and Final Exam (Exam). |
 | `date` | From original set | Information about the final submission date of the assessment calculated as the number of days since the start of the module-presentation. The starting date of the presentation has number 0 (zero). |
 | `weight` | From original set | Weight of the assessment in %. Typically, Exams are treated separately and have the weight 100%; the sum of all other assessments is 100%. |
 | `due_vs_submission_date` | Extracted from data | The difference between the due date of a given assessment and the date the given student submitted the assignment. |

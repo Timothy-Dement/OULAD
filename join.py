@@ -64,7 +64,7 @@ for mod in modules:
 
     mod_start = time.time()
 
-    mod_student_assessment_extracted = pd.read_csv(f'./data/{mod}/{mod}_student_assessments_extracted.csv')
+    mod_student_assessment_extracted = pd.read_csv(f'./data/{mod}/{mod}_student_assessment_extracted.csv')
     mod_student_info = pd.read_csv(f'./data/{mod}/{mod}_student_info.csv')
 
     mod_composite = pd.merge(mod_student_assessment_extracted, mod_student_info, on=['code_module', 'code_presentation', 'id_student'])

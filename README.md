@@ -14,7 +14,7 @@ cd OULAD
 ## Description of Attributes
 
 | Attribute | Source | Description | Type |
-| --- | --- | --- | --- |
+| :---: | :---: | :---: | :---: |
 | `code_module` | From original set | Code name of the module, which serves as the identifier. | Categorical |
 | `code_presentation` | From original set | Code name of the presentation. It consists of the year and B for the presentation starting in February and J for the presentation starting in October. | Categorical |
 | `id_student` | From original set | A unique identification number for the student. | Categorical |

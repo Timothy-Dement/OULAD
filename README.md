@@ -13,105 +13,105 @@ cd OULAD
 
 ## Description of Attributes
 
-| Attribute | Source | Description |
-| --- | --- | --- |
-| `code_module` | From original set | Code name of the module, which serves as the identifier. |
-| `code_presentation` | From original set | Code name of the presentation. It consists of the year and B for the presentation starting in February and J for the presentation starting in October. |
-| `id_student` | From original set | A unique identification number for the student. |
-| `gender` | From original set | The student's gender. |
-| `region` | From original set | Identifies the geographic region where the student lived while taking the module-presentation. |
-| `highest_education` | From original set | Highest student education level on entry to the module presentation. |
-| `imd_band` | From original set | Specifies the Index of Multiple Depravation band of the place where the student lived during the module-presentation. |
-| `age_band` | From original set | Band of the student's age. |
-| `num_of_prev_attempts` | From original set | The number of times the student has attempted this module. |
-| `studied_credits` | From original set | The total number of credits for the modules the student is currently studying. |
-| `disability` | From original set | Indicates whether the student has declared a disability. |
-| `id_assessment` | From original set | The identification number of the assessment. |
-| `assessment_type` | From original set | Type of assessment. Three types of assessments exits: Tutor Marked Assessment (TMA), Computer Marked Assessment (CMA), and Final Exam (Exam). |
-| `date` | From original set | Information about the final submission date of the assessment calculated as the number of days since the start of the module-presentation. The starting date of the presentation has number 0 (zero). |
-| `weight` | From original set | Weight of the assessment in %. Typically, Exams are treated separately and have the weight 100%; the sum of all other assessments is 100%. |
-| `due_vs_submission_date` | Extracted from data | The difference between the due date of a given assessment and the date the given student submitted the assignment. |
-| `resource_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `resource_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `resource_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `resource_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `oucontent_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `oucontent_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `oucontent_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `oucontent_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
+| Attribute | Source | Description | Type |
+| --- | --- | --- | --- |
+| `code_module` | From original set | Code name of the module, which serves as the identifier. | Categorical |
+| `code_presentation` | From original set | Code name of the presentation. It consists of the year and B for the presentation starting in February and J for the presentation starting in October. | Categorical |
+| `id_student` | From original set | A unique identification number for the student. | Categorical |
+| `gender` | From original set | The student's gender. | Categorical |
+| `region` | From original set | Identifies the geographic region where the student lived while taking the module-presentation. | Categorical |
+| `highest_education` | From original set | Highest student education level on entry to the module presentation. | Categorical |
+| `imd_band` | From original set | Specifies the Index of Multiple Depravation band of the place where the student lived during the module-presentation. | Categorical |
+| `age_band` | From original set | Band of the student's age. | Categorical |
+| `num_of_prev_attempts` | From original set | The number of times the student has attempted this module. | Numerical |
+| `studied_credits` | From original set | The total number of credits for the modules the student is currently studying. | Numerical |
+| `disability` | From original set | Indicates whether the student has declared a disability. | Categorical |
+| `id_assessment` | From original set | The identification number of the assessment. | Categorical |
+| `assessment_type` | From original set | Type of assessment. Three types of assessments exits: Tutor Marked Assessment (TMA), Computer Marked Assessment (CMA), and Final Exam (Exam). | Categorical |
+| `date` | From original set | Information about the final submission date of the assessment calculated as the number of days since the start of the module-presentation. The starting date of the presentation has number 0 (zero). | Numerical |
+| `weight` | From original set | Weight of the assessment in %. Typically, Exams are treated separately and have the weight 100%; the sum of all other assessments is 100%. | Numerical |
+| `due_vs_submission_date` | Extracted from data | The difference between the due date of a given assessment and the date the given student submitted the assignment. | Numerical |
+| `resource_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `resource_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `resource_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `resource_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `oucontent_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `oucontent_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `oucontent_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `oucontent_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
 | `url_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `url_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `url_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `url_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `homepage_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `homepage_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `homepage_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `homepage_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `subpage_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `subpage_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `subpage_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `subpage_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `glossary_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `glossary_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `glossary_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `glossary_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `forumng_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `forumng_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `forumng_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `forumng_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `oucollaborate_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `oucollaborate_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `oucollaborate_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `oucollaborate_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `dataplus_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `dataplus_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `dataplus_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `dataplus_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
+| `url_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `url_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `url_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `homepage_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `homepage_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `homepage_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `homepage_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `subpage_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `subpage_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `subpage_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `subpage_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `glossary_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `glossary_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `glossary_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `glossary_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `forumng_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `forumng_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `forumng_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `forumng_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `oucollaborate_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `oucollaborate_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `oucollaborate_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `oucollaborate_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `dataplus_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `dataplus_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `dataplus_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `dataplus_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
 | `quiz_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `quiz_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `quiz_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `quiz_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `ouelluminate_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `ouelluminate_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `ouelluminate_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `ouelluminate_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `sharedsubpage_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `sharedsubpage_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `sharedsubpage_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `sharedsubpage_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `questionnaire_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `questionnaire_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `questionnaire_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `questionnaire_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
+| `quiz_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `quiz_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `quiz_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `ouelluminate_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `ouelluminate_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `ouelluminate_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `ouelluminate_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `sharedsubpage_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `sharedsubpage_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `sharedsubpage_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `sharedsubpage_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `questionnaire_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `questionnaire_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `questionnaire_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `questionnaire_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
 | `page_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `page_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `page_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `page_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `externalquiz_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `externalquiz_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `externalquiz_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `externalquiz_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
+| `page_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `page_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `page_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `externalquiz_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `externalquiz_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `externalquiz_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `externalquiz_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
 | `ouwiki_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `ouwiki_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `ouwiki_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `ouwiki_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `dualpane_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `dualpane_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `dualpane_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `dualpane_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `repeatactivity_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `repeatactivity_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `repeatactivity_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `repeatactivity_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
+| `ouwiki_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `ouwiki_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `ouwiki_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `dualpane_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `dualpane_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `dualpane_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `dualpane_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `repeatactivity_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `repeatactivity_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `repeatactivity_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `repeatactivity_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
 | `folder_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `folder_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `folder_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `folder_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `htmlactivity_clicks_by_days` | Extracted from data | See **Note 1** below. |
-| `htmlactivity_clicks_by_days_change` | Extracted from data | See **Note 2** below. |
-| `htmlactivity_clicks_by_interval` | Extracted from data | See **Note 3** below. |
-| `htmlactivity_clicks_by_interval_change` | Extracted from data | See **Note 4** below. |
-| `score` | From original set | The student's score in this assessment. The range is from 0 to 100. A score lower than 40 is interpreted as Fail. |
+| `folder_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `folder_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `folder_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `htmlactivity_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
+| `htmlactivity_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
+| `htmlactivity_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
+| `htmlactivity_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
+| `score` | From original set | The student's score in this assessment. The range is from 0 to 100. A score lower than 40 is interpreted as Fail. | Numerical |
 
 **Note 1:**
 

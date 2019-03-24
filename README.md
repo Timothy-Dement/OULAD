@@ -67,7 +67,7 @@ cd OULAD
 | `dataplus_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
 | `dataplus_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
 | `dataplus_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
-| `quiz_clicks_by_days` | Extracted from data | See **Note 1** below. |
+| `quiz_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
 | `quiz_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
 | `quiz_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
 | `quiz_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
@@ -83,7 +83,7 @@ cd OULAD
 | `questionnaire_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
 | `questionnaire_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
 | `questionnaire_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
-| `page_clicks_by_days` | Extracted from data | See **Note 1** below. |
+| `page_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
 | `page_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
 | `page_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
 | `page_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
@@ -91,7 +91,7 @@ cd OULAD
 | `externalquiz_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
 | `externalquiz_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
 | `externalquiz_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
-| `ouwiki_clicks_by_days` | Extracted from data | See **Note 1** below. |
+| `ouwiki_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
 | `ouwiki_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
 | `ouwiki_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
 | `ouwiki_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
@@ -103,7 +103,7 @@ cd OULAD
 | `repeatactivity_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
 | `repeatactivity_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
 | `repeatactivity_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |
-| `folder_clicks_by_days` | Extracted from data | See **Note 1** below. |
+| `folder_clicks_by_days` | Extracted from data | See **Note 1** below. | Numerical |
 | `folder_clicks_by_days_change` | Extracted from data | See **Note 2** below. | Numerical |
 | `folder_clicks_by_interval` | Extracted from data | See **Note 3** below. | Numerical |
 | `folder_clicks_by_interval_change` | Extracted from data | See **Note 4** below. | Numerical |

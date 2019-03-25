@@ -1,0 +1,16 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="date <= 114.047\ngini = 0.5\nsamples = 48936\nvalue = [24468, 24468]", fillcolor="#e5813900"] ;
+1 [label="highest_education_Lower Than A Level <= 0.0\ngini = 0.46\nsamples = 23588\nvalue = [8468, 15120]", fillcolor="#399de570"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="gini = 0.382\nsamples = 13905\nvalue = [3580, 10325]", fillcolor="#399de5a7"] ;
+1 -> 2 ;
+3 [label="gini = 0.5\nsamples = 9683\nvalue = [4888, 4795]", fillcolor="#e5813905"] ;
+1 -> 3 ;
+4 [label="highest_education_Lower Than A Level <= 0.0\ngini = 0.466\nsamples = 25348\nvalue = [16000, 9348]", fillcolor="#e581396a"] ;
+0 -> 4 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+5 [label="gini = 0.495\nsamples = 15047\nvalue = [8305, 6742]", fillcolor="#e5813930"] ;
+4 -> 5 ;
+6 [label="gini = 0.378\nsamples = 10301\nvalue = [7695, 2606]", fillcolor="#e58139a9"] ;
+4 -> 6 ;
+}

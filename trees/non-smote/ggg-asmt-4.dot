@@ -1,0 +1,28 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="assessment_type_CMA <= 0.5\ngini = 0.039\nsamples = 13698\nvalue = [272, 13426]", fillcolor="#399de5fa"] ;
+1 [label="date <= 145.0\ngini = 0.053\nsamples = 5077\nvalue = [139, 4938]", fillcolor="#399de5f8"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="date <= 89.0\ngini = 0.04\nsamples = 3521\nvalue = [71, 3450]", fillcolor="#399de5fa"] ;
+1 -> 2 ;
+3 [label="gini = 0.029\nsamples = 1797\nvalue = [26, 1771]", fillcolor="#399de5fb"] ;
+2 -> 3 ;
+4 [label="date <= 120.5\ngini = 0.051\nsamples = 1724\nvalue = [45, 1679]", fillcolor="#399de5f8"] ;
+2 -> 4 ;
+5 [label="gini = 0.042\nsamples = 558\nvalue = [12, 546]", fillcolor="#399de5f9"] ;
+4 -> 5 ;
+6 [label="gini = 0.055\nsamples = 1166\nvalue = [33, 1133]", fillcolor="#399de5f8"] ;
+4 -> 6 ;
+7 [label="date <= 169.5\ngini = 0.084\nsamples = 1556\nvalue = [68, 1488]", fillcolor="#399de5f3"] ;
+1 -> 7 ;
+8 [label="gini = 0.074\nsamples = 495\nvalue = [19, 476]", fillcolor="#399de5f5"] ;
+7 -> 8 ;
+9 [label="gini = 0.088\nsamples = 1061\nvalue = [49, 1012]", fillcolor="#399de5f3"] ;
+7 -> 9 ;
+10 [label="date <= 225.5\ngini = 0.03\nsamples = 8621\nvalue = [133, 8488]", fillcolor="#399de5fb"] ;
+0 -> 10 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+11 [label="gini = 0.035\nsamples = 2758\nvalue = [49, 2709]", fillcolor="#399de5fa"] ;
+10 -> 11 ;
+12 [label="gini = 0.028\nsamples = 5863\nvalue = [84, 5779]", fillcolor="#399de5fb"] ;
+10 -> 12 ;
+}

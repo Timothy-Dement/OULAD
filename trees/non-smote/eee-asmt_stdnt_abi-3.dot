@@ -1,0 +1,32 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="homepage_clicks_by_interval <= 16.5\ngini = 0.037\nsamples = 7105\nvalue = [133, 6972]", fillcolor="#399de5fa"] ;
+1 [label="due_vs_submission_date <= -52.5\ngini = 0.151\nsamples = 753\nvalue = [62, 691]", fillcolor="#399de5e8"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="oucontent_clicks_by_interval <= 12.0\ngini = 0.48\nsamples = 5\nvalue = [3, 2]", fillcolor="#e5813955"] ;
+1 -> 2 ;
+3 [label="gini = 0.0\nsamples = 2\nvalue = [0, 2]", fillcolor="#399de5ff"] ;
+2 -> 3 ;
+4 [label="gini = 0.0\nsamples = 3\nvalue = [3, 0]", fillcolor="#e58139ff"] ;
+2 -> 4 ;
+5 [label="quiz_clicks_by_interval_change <= -1.5\ngini = 0.145\nsamples = 748\nvalue = [59, 689]", fillcolor="#399de5e9"] ;
+1 -> 5 ;
+6 [label="gini = 0.03\nsamples = 194\nvalue = [3, 191]", fillcolor="#399de5fb"] ;
+5 -> 6 ;
+7 [label="gini = 0.182\nsamples = 554\nvalue = [56, 498]", fillcolor="#399de5e2"] ;
+5 -> 7 ;
+8 [label="ouwiki_clicks_by_days_change <= -5.5\ngini = 0.022\nsamples = 6352\nvalue = [71, 6281]", fillcolor="#399de5fc"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label="ouwiki_clicks_by_interval_change <= 38.5\ngini = 0.463\nsamples = 11\nvalue = [4, 7]", fillcolor="#399de56d"] ;
+8 -> 9 ;
+10 [label="gini = 0.0\nsamples = 6\nvalue = [0, 6]", fillcolor="#399de5ff"] ;
+9 -> 10 ;
+11 [label="gini = 0.32\nsamples = 5\nvalue = [4, 1]", fillcolor="#e58139bf"] ;
+9 -> 11 ;
+12 [label="resource_clicks_by_days_change <= 1542.0\ngini = 0.021\nsamples = 6341\nvalue = [67, 6274]", fillcolor="#399de5fc"] ;
+8 -> 12 ;
+13 [label="gini = 0.021\nsamples = 6340\nvalue = [66, 6274]", fillcolor="#399de5fc"] ;
+12 -> 13 ;
+14 [label="gini = 0.0\nsamples = 1\nvalue = [1, 0]", fillcolor="#e58139ff"] ;
+12 -> 14 ;
+}

@@ -1,0 +1,28 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="highest_education_Lower Than A Level <= 0.0\ngini = 0.5\nsamples = 27876\nvalue = [13938, 13938]", fillcolor="#e5813900"] ;
+1 [label="highest_education_A Level or Equivalent <= 0.0\ngini = 0.469\nsamples = 17403\nvalue = [6541, 10862]", fillcolor="#399de565"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="imd_band_0-10% <= 0.016\ngini = 0.272\nsamples = 5056\nvalue = [820, 4236]", fillcolor="#399de5ce"] ;
+1 -> 2 ;
+3 [label="gini = 0.239\nsamples = 4702\nvalue = [651, 4051]", fillcolor="#399de5d6"] ;
+2 -> 3 ;
+4 [label="gini = 0.499\nsamples = 354\nvalue = [169, 185]", fillcolor="#399de516"] ;
+2 -> 4 ;
+5 [label="highest_education_A Level or Equivalent <= 1.0\ngini = 0.497\nsamples = 12347\nvalue = [5721, 6626]", fillcolor="#399de523"] ;
+1 -> 5 ;
+6 [label="gini = 0.0\nsamples = 2217\nvalue = [2217, 0]", fillcolor="#e58139ff"] ;
+5 -> 6 ;
+7 [label="gini = 0.453\nsamples = 10130\nvalue = [3504, 6626]", fillcolor="#399de578"] ;
+5 -> 7 ;
+8 [label="highest_education_Lower Than A Level <= 1.0\ngini = 0.415\nsamples = 10473\nvalue = [7397, 3076]", fillcolor="#e5813995"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label="gini = 0.0\nsamples = 5435\nvalue = [5435, 0]", fillcolor="#e58139ff"] ;
+8 -> 9 ;
+10 [label="forumng_clicks_by_interval <= 13.957\ngini = 0.476\nsamples = 5038\nvalue = [1962, 3076]", fillcolor="#399de55c"] ;
+8 -> 10 ;
+11 [label="gini = 0.498\nsamples = 3634\nvalue = [1699, 1935]", fillcolor="#399de51f"] ;
+10 -> 11 ;
+12 [label="gini = 0.304\nsamples = 1404\nvalue = [263, 1141]", fillcolor="#399de5c4"] ;
+10 -> 12 ;
+}

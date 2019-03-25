@@ -1,0 +1,32 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="due_vs_submission_date <= 0.999\ngini = 0.5\nsamples = 13944\nvalue = [6972, 6972]", fillcolor="#e5813900"] ;
+1 [label="homepage_clicks_by_days <= 21.997\ngini = 0.439\nsamples = 9644\nvalue = [6510, 3134]", fillcolor="#e5813984"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="highest_education_A Level or Equivalent <= 1.0\ngini = 0.346\nsamples = 7933\nvalue = [6166, 1767]", fillcolor="#e58139b6"] ;
+1 -> 2 ;
+3 [label="gini = 0.251\nsamples = 6259\nvalue = [5339, 920]", fillcolor="#e58139d3"] ;
+2 -> 3 ;
+4 [label="gini = 0.5\nsamples = 1674\nvalue = [827, 847]", fillcolor="#399de506"] ;
+2 -> 4 ;
+5 [label="due_vs_submission_date <= 0.004\ngini = 0.321\nsamples = 1711\nvalue = [344, 1367]", fillcolor="#399de5bf"] ;
+1 -> 5 ;
+6 [label="gini = 0.266\nsamples = 1624\nvalue = [257, 1367]", fillcolor="#399de5cf"] ;
+5 -> 6 ;
+7 [label="gini = 0.0\nsamples = 87\nvalue = [87, 0]", fillcolor="#e58139ff"] ;
+5 -> 7 ;
+8 [label="homepage_clicks_by_days <= 11.98\ngini = 0.192\nsamples = 4300\nvalue = [462, 3838]", fillcolor="#399de5e0"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label="quiz_clicks_by_days_change <= 0.077\ngini = 0.458\nsamples = 883\nvalue = [314, 569]", fillcolor="#399de572"] ;
+8 -> 9 ;
+10 [label="gini = 0.196\nsamples = 526\nvalue = [58, 468]", fillcolor="#399de5df"] ;
+9 -> 10 ;
+11 [label="gini = 0.406\nsamples = 357\nvalue = [256, 101]", fillcolor="#e581399a"] ;
+9 -> 11 ;
+12 [label="page_clicks_by_days_change <= -0.032\ngini = 0.083\nsamples = 3417\nvalue = [148, 3269]", fillcolor="#399de5f3"] ;
+8 -> 12 ;
+13 [label="gini = 0.47\nsamples = 77\nvalue = [48, 29]", fillcolor="#e5813965"] ;
+12 -> 13 ;
+14 [label="gini = 0.058\nsamples = 3340\nvalue = [100, 3240]", fillcolor="#399de5f7"] ;
+12 -> 14 ;
+}

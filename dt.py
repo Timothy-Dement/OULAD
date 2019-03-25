@@ -110,19 +110,19 @@ activity_attributes_by_interval = ['due_vs_submission_date',
                                    'htmlactivity_clicks_by_interval',
                                    'htmlactivity_clicks_by_interval_change']
 
-if os.path.exists('./dt-output'):
-    shutil.rmtree('./dt-output')
+# if os.path.exists('./dt-output'):
+#     shutil.rmtree('./dt-output')
 
-if os.path.exists('./trees'):
-    shutil.rmtree('./trees')
+# if os.path.exists('./trees'):
+#     shutil.rmtree('./trees')
 
-os.mkdir('./dt-output')
-os.mkdir('./dt-output/non-smote')
-os.mkdir('./dt-output/smote')
+# os.mkdir('./dt-output')
+# os.mkdir('./dt-output/non-smote')
+# os.mkdir('./dt-output/smote')
 
-os.mkdir('./trees')
-os.mkdir('./trees/non-smote')
-os.mkdir('./trees/smote')
+# os.mkdir('./trees')
+# os.mkdir('./trees/non-smote')
+# os.mkdir('./trees/smote')
 
 sample = 'non-smote'
 # sample = 'smote'
@@ -165,7 +165,7 @@ for title in titles:
 
             if title == 'asmt':
                 X = X[assessment_attributes]
-            elif title == 'asmt_stndt':
+            elif title == 'asmt_stdnt':
                 X = X[assessment_attributes + student_attributes]
             elif title == 'asmt_abd':
                 X = X[assessment_attributes + activity_attributes_by_days]
@@ -178,6 +178,8 @@ for title in titles:
 
             # Use one-hot-encoding for categorical variables
             X = pd.get_dummies(X)
+
+            # NORMALIZATION
 
             # Initialize for stratified k-fold cross-validation
             skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=0)

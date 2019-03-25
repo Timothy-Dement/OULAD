@@ -1,0 +1,28 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="weight <= 0.998\ngini = 0.5\nsamples = 74806\nvalue = [37403, 37403]", fillcolor="#e5813900"] ;
+1 [label="resource_clicks_by_interval <= 74.0\ngini = 0.091\nsamples = 19544\nvalue = [18612, 932]", fillcolor="#e58139f2"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="due_vs_submission_date <= 0.0\ngini = 0.09\nsamples = 19536\nvalue = [18612, 924]", fillcolor="#e58139f2"] ;
+1 -> 2 ;
+3 [label="gini = 0.187\nsamples = 1483\nvalue = [1328, 155]", fillcolor="#e58139e1"] ;
+2 -> 3 ;
+4 [label="gini = 0.082\nsamples = 18053\nvalue = [17284, 769]", fillcolor="#e58139f4"] ;
+2 -> 4 ;
+5 [label="gini = 0.0\nsamples = 8\nvalue = [0, 8]", fillcolor="#399de5ff"] ;
+1 -> 5 ;
+6 [label="forumng_clicks_by_interval <= 3.993\ngini = 0.449\nsamples = 55262\nvalue = [18791, 36471]", fillcolor="#399de57c"] ;
+0 -> 6 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+7 [label="due_vs_submission_date <= 1.0\ngini = 0.494\nsamples = 34487\nvalue = [15383, 19104]", fillcolor="#399de532"] ;
+6 -> 7 ;
+8 [label="gini = 0.499\nsamples = 24343\nvalue = [12580, 11763]", fillcolor="#e5813911"] ;
+7 -> 8 ;
+9 [label="gini = 0.4\nsamples = 10144\nvalue = [2803, 7341]", fillcolor="#399de59e"] ;
+7 -> 9 ;
+10 [label="weight <= 10.003\ngini = 0.274\nsamples = 20775\nvalue = [3408, 17367]", fillcolor="#399de5cd"] ;
+6 -> 10 ;
+11 [label="gini = 0.221\nsamples = 15105\nvalue = [1912, 13193]", fillcolor="#399de5da"] ;
+10 -> 11 ;
+12 [label="gini = 0.388\nsamples = 5670\nvalue = [1496, 4174]", fillcolor="#399de5a4"] ;
+10 -> 12 ;
+}

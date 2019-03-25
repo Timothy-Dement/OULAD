@@ -1,0 +1,28 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="imd_band_0-10% <= 0.0\ngini = 0.5\nsamples = 26852\nvalue = [13426, 13426]", fillcolor="#e5813900"] ;
+1 [label="age_band_35-55 <= 1.0\ngini = 0.493\nsamples = 21431\nvalue = [9443, 11988]", fillcolor="#399de536"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="age_band_35-55 <= 0.0\ngini = 0.5\nsamples = 14501\nvalue = [7472, 7029]", fillcolor="#e581390f"] ;
+1 -> 2 ;
+3 [label="gini = 0.492\nsamples = 12488\nvalue = [5459, 7029]", fillcolor="#399de539"] ;
+2 -> 3 ;
+4 [label="gini = 0.0\nsamples = 2013\nvalue = [2013, 0]", fillcolor="#e58139ff"] ;
+2 -> 4 ;
+5 [label="region_London Region <= 0.003\ngini = 0.407\nsamples = 6930\nvalue = [1971, 4959]", fillcolor="#399de59a"] ;
+1 -> 5 ;
+6 [label="gini = 0.307\nsamples = 5248\nvalue = [992, 4256]", fillcolor="#399de5c4"] ;
+5 -> 6 ;
+7 [label="gini = 0.487\nsamples = 1682\nvalue = [979, 703]", fillcolor="#e5813948"] ;
+5 -> 7 ;
+8 [label="imd_band_0-10% <= 1.0\ngini = 0.39\nsamples = 5421\nvalue = [3983, 1438]", fillcolor="#e58139a3"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label="gini = 0.0\nsamples = 2515\nvalue = [2515, 0]", fillcolor="#e58139ff"] ;
+8 -> 9 ;
+10 [label="region_North Western Region <= 0.0\ngini = 0.5\nsamples = 2906\nvalue = [1468, 1438]", fillcolor="#e5813905"] ;
+8 -> 10 ;
+11 [label="gini = 0.434\nsamples = 1572\nvalue = [501, 1071]", fillcolor="#399de588"] ;
+10 -> 11 ;
+12 [label="gini = 0.399\nsamples = 1334\nvalue = [967, 367]", fillcolor="#e581399e"] ;
+10 -> 12 ;
+}

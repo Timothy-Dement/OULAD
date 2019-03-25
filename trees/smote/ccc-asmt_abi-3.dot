@@ -1,0 +1,32 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="due_vs_submission_date <= 1.0\ngini = 0.5\nsamples = 27876\nvalue = [13938, 13938]", fillcolor="#e5813900"] ;
+1 [label="homepage_clicks_by_interval <= 20.996\ngini = 0.495\nsamples = 24887\nvalue = [13627, 11260]", fillcolor="#e581392c"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="resource_clicks_by_interval <= 0.001\ngini = 0.461\nsamples = 15500\nvalue = [9922, 5578]", fillcolor="#e5813970"] ;
+1 -> 2 ;
+3 [label="gini = 0.494\nsamples = 2751\nvalue = [1228, 1523]", fillcolor="#399de531"] ;
+2 -> 3 ;
+4 [label="gini = 0.434\nsamples = 12749\nvalue = [8694, 4055]", fillcolor="#e5813988"] ;
+2 -> 4 ;
+5 [label="weight <= 6.999\ngini = 0.478\nsamples = 9387\nvalue = [3705, 5682]", fillcolor="#399de559"] ;
+1 -> 5 ;
+6 [label="gini = 0.495\nsamples = 3575\nvalue = [1968, 1607]", fillcolor="#e581392f"] ;
+5 -> 6 ;
+7 [label="gini = 0.419\nsamples = 5812\nvalue = [1737, 4075]", fillcolor="#399de592"] ;
+5 -> 7 ;
+8 [label="assessment_type_CMA <= 0.018\ngini = 0.186\nsamples = 2989\nvalue = [311, 2678]", fillcolor="#399de5e1"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label="homepage_clicks_by_interval <= 14.984\ngini = 0.131\nsamples = 2821\nvalue = [198, 2623]", fillcolor="#399de5ec"] ;
+8 -> 9 ;
+10 [label="gini = 0.261\nsamples = 948\nvalue = [146, 802]", fillcolor="#399de5d1"] ;
+9 -> 10 ;
+11 [label="gini = 0.054\nsamples = 1873\nvalue = [52, 1821]", fillcolor="#399de5f8"] ;
+9 -> 11 ;
+12 [label="subpage_clicks_by_interval <= 0.035\ngini = 0.44\nsamples = 168\nvalue = [113, 55]", fillcolor="#e5813983"] ;
+8 -> 12 ;
+13 [label="gini = 0.486\nsamples = 60\nvalue = [25, 35]", fillcolor="#399de549"] ;
+12 -> 13 ;
+14 [label="gini = 0.302\nsamples = 108\nvalue = [88, 20]", fillcolor="#e58139c5"] ;
+12 -> 14 ;
+}

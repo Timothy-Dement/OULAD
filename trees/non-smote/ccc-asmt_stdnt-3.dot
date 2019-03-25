@@ -1,0 +1,32 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="highest_education_Lower Than A Level <= 0.5\ngini = 0.165\nsamples = 15324\nvalue = [1386, 13938]", fillcolor="#399de5e6"] ;
+1 [label="imd_band_20-30% <= 0.5\ngini = 0.145\nsamples = 11787\nvalue = [925, 10862]", fillcolor="#399de5e9"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="date <= 25.0\ngini = 0.136\nsamples = 10812\nvalue = [794, 10018]", fillcolor="#399de5eb"] ;
+1 -> 2 ;
+3 [label="gini = 0.183\nsamples = 1962\nvalue = [200, 1762]", fillcolor="#399de5e2"] ;
+2 -> 3 ;
+4 [label="gini = 0.125\nsamples = 8850\nvalue = [594, 8256]", fillcolor="#399de5ed"] ;
+2 -> 4 ;
+5 [label="studied_credits <= 70.0\ngini = 0.233\nsamples = 975\nvalue = [131, 844]", fillcolor="#399de5d7"] ;
+1 -> 5 ;
+6 [label="gini = 0.182\nsamples = 653\nvalue = [66, 587]", fillcolor="#399de5e2"] ;
+5 -> 6 ;
+7 [label="gini = 0.322\nsamples = 322\nvalue = [65, 257]", fillcolor="#399de5bf"] ;
+5 -> 7 ;
+8 [label="studied_credits <= 85.0\ngini = 0.227\nsamples = 3537\nvalue = [461, 3076]", fillcolor="#399de5d9"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label="region_Yorkshire Region <= 0.5\ngini = 0.197\nsamples = 2450\nvalue = [272, 2178]", fillcolor="#399de5df"] ;
+8 -> 9 ;
+10 [label="gini = 0.187\nsamples = 2326\nvalue = [243, 2083]", fillcolor="#399de5e1"] ;
+9 -> 10 ;
+11 [label="gini = 0.358\nsamples = 124\nvalue = [29, 95]", fillcolor="#399de5b1"] ;
+9 -> 11 ;
+12 [label="imd_band_0-10% <= 0.5\ngini = 0.287\nsamples = 1087\nvalue = [189, 898]", fillcolor="#399de5c9"] ;
+8 -> 12 ;
+13 [label="gini = 0.272\nsamples = 990\nvalue = [161, 829]", fillcolor="#399de5cd"] ;
+12 -> 13 ;
+14 [label="gini = 0.411\nsamples = 97\nvalue = [28, 69]", fillcolor="#399de598"] ;
+12 -> 14 ;
+}

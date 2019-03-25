@@ -1,0 +1,8 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="highest_education_Lower Than A Level <= 0.5\ngini = 0.165\nsamples = 15324\nvalue = [1386, 13938]", fillcolor="#399de5e6"] ;
+1 [label="gini = 0.145\nsamples = 11787\nvalue = [925, 10862]", fillcolor="#399de5e9"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="gini = 0.227\nsamples = 3537\nvalue = [461, 3076]", fillcolor="#399de5d9"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+}

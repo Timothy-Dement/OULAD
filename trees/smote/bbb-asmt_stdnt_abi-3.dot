@@ -1,0 +1,32 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="weight <= 0.99\ngini = 0.5\nsamples = 74806\nvalue = [37403, 37403]", fillcolor="#e5813900"] ;
+1 [label="region_Ireland <= 1.0\ngini = 0.091\nsamples = 19411\nvalue = [18479, 932]", fillcolor="#e58139f2"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="region_Scotland <= 1.0\ngini = 0.081\nsamples = 19244\nvalue = [18427, 817]", fillcolor="#e58139f4"] ;
+1 -> 2 ;
+3 [label="gini = 0.071\nsamples = 18905\nvalue = [18205, 700]", fillcolor="#e58139f5"] ;
+2 -> 3 ;
+4 [label="gini = 0.452\nsamples = 339\nvalue = [222, 117]", fillcolor="#e5813979"] ;
+2 -> 4 ;
+5 [label="imd_band_80-90% <= 0.003\ngini = 0.429\nsamples = 167\nvalue = [52, 115]", fillcolor="#399de58c"] ;
+1 -> 5 ;
+6 [label="gini = 0.302\nsamples = 135\nvalue = [25, 110]", fillcolor="#399de5c5"] ;
+5 -> 6 ;
+7 [label="gini = 0.264\nsamples = 32\nvalue = [27, 5]", fillcolor="#e58139d0"] ;
+5 -> 7 ;
+8 [label="highest_education_Lower Than A Level <= 0.0\ngini = 0.45\nsamples = 55395\nvalue = [18924, 36471]", fillcolor="#399de57b"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label="region_London Region <= 0.002\ngini = 0.303\nsamples = 27028\nvalue = [5034, 21994]", fillcolor="#399de5c5"] ;
+8 -> 9 ;
+10 [label="gini = 0.246\nsamples = 23613\nvalue = [3397, 20216]", fillcolor="#399de5d4"] ;
+9 -> 10 ;
+11 [label="gini = 0.499\nsamples = 3415\nvalue = [1637, 1778]", fillcolor="#399de514"] ;
+9 -> 11 ;
+12 [label="highest_education_Lower Than A Level <= 1.0\ngini = 0.5\nsamples = 28367\nvalue = [13890, 14477]", fillcolor="#399de50a"] ;
+8 -> 12 ;
+13 [label="gini = 0.0\nsamples = 8852\nvalue = [8852, 0]", fillcolor="#e58139ff"] ;
+12 -> 13 ;
+14 [label="gini = 0.383\nsamples = 19515\nvalue = [5038, 14477]", fillcolor="#399de5a6"] ;
+12 -> 14 ;
+}

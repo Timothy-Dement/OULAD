@@ -1,0 +1,32 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="due_vs_submission_date <= 1.0\ngini = 0.5\nsamples = 294546\nvalue = [147273, 147273]", fillcolor="#e5813900"] ;
+1 [label="weight <= 1.001\ngini = 0.464\nsamples = 180430\nvalue = [114285, 66145]", fillcolor="#e581396b"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="assessment_type_TMA <= 0.007\ngini = 0.404\nsamples = 26073\nvalue = [7324, 18749]", fillcolor="#399de59b"] ;
+1 -> 2 ;
+3 [label="gini = 0.256\nsamples = 20077\nvalue = [3024, 17053]", fillcolor="#399de5d2"] ;
+2 -> 3 ;
+4 [label="gini = 0.406\nsamples = 5996\nvalue = [4300, 1696]", fillcolor="#e581399a"] ;
+2 -> 4 ;
+5 [label="due_vs_submission_date <= 0.0\ngini = 0.426\nsamples = 154357\nvalue = [106961, 47396]", fillcolor="#e581398e"] ;
+1 -> 5 ;
+6 [label="gini = 0.448\nsamples = 140219\nvalue = [92823, 47396]", fillcolor="#e581397d"] ;
+5 -> 6 ;
+7 [label="gini = 0.0\nsamples = 14138\nvalue = [14138, 0]", fillcolor="#e58139ff"] ;
+5 -> 7 ;
+8 [label="date <= 20.0\ngini = 0.411\nsamples = 114116\nvalue = [32988, 81128]", fillcolor="#399de597"] ;
+0 -> 8 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+9 [label="weight <= 4.999\ngini = 0.42\nsamples = 18590\nvalue = [13023, 5567]", fillcolor="#e5813992"] ;
+8 -> 9 ;
+10 [label="gini = 0.113\nsamples = 13477\nvalue = [12666, 811]", fillcolor="#e58139ef"] ;
+9 -> 10 ;
+11 [label="gini = 0.13\nsamples = 5113\nvalue = [357, 4756]", fillcolor="#399de5ec"] ;
+9 -> 11 ;
+12 [label="assessment_type_Exam <= 0.007\ngini = 0.331\nsamples = 95526\nvalue = [19965, 75561]", fillcolor="#399de5bc"] ;
+8 -> 12 ;
+13 [label="gini = 0.283\nsamples = 89134\nvalue = [15240, 73894]", fillcolor="#399de5ca"] ;
+12 -> 13 ;
+14 [label="gini = 0.386\nsamples = 6392\nvalue = [4725, 1667]", fillcolor="#e58139a5"] ;
+12 -> 14 ;
+}

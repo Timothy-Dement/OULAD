@@ -1,0 +1,8 @@
+digraph Tree {
+node [shape=box, style="filled", color="black"] ;
+0 [label="oucontent_clicks_by_interval <= 19.5\ngini = 0.058\nsamples = 2835\nvalue = [84, 2751]", fillcolor="#399de5f7"] ;
+1 [label="gini = 0.214\nsamples = 386\nvalue = [47, 339]", fillcolor="#399de5dc"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label="gini = 0.03\nsamples = 2449\nvalue = [37, 2412]", fillcolor="#399de5fb"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+}

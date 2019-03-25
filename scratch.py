@@ -4,4 +4,4 @@ import pandas as pd
 import sys
 import time
 
-print(len(None))
+print(list(range(1,11)))

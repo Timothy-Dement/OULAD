@@ -124,8 +124,8 @@ activity_attributes_by_interval = ['due_vs_submission_date',
 # os.mkdir('./trees/non-smote')
 # os.mkdir('./trees/smote')
 
-sample = 'non-smote'
-# sample = 'smote'
+# sample = 'non-smote'
+sample = 'smote'
 
 modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'zzz']
 
@@ -229,8 +229,8 @@ for title in titles:
                 elif sample == 'smote':
                     dt.fit(X_smote, y_smote)
 
-                eg(dt, out_file=f'./trees/{sample}/{mod}-{title}-{depth}.dot', feature_names=list(X_train), filled=True)
-                os.system(f'dot -Tpng ./trees/{sample}/{mod}-{title}-{depth}.dot -o ./trees/{sample}/_{mod}-{title}-{depth}.png')
+                # eg(dt, out_file=f'./trees/{sample}/{mod}-{title}-{depth}.dot', feature_names=list(X_train), filled=True)
+                # os.system(f'dot -Tpng ./trees/{sample}/{mod}-{title}-{depth}.dot -o ./trees/{sample}/_{mod}-{title}-{depth}.png')
 
                 y_hat = dt.predict(X_test)
 
@@ -262,10 +262,10 @@ for title in titles:
             aggregate_fscore = aggregate_fscore / 10
 
             with open(f'./dt-output/{sample}/{mod}-{title}.txt', 'a') as file:
-                file.write(f'[{depth}] Accuracy:  {aggregate_accuracy}\n')
-                file.write(f'[{depth}] Precision: {aggregate_precision}\n')
-                file.write(f'[{depth}] Recall:    {aggregate_recall}\n')
-                file.write(f'[{depth}] F-Score:   {aggregate_fscore}\n\n')
+                file.write(f'{depth},accuracy,{aggregate_accuracy}\n')
+                file.write(f'{depth},precision,{aggregate_precision}\n')
+                file.write(f'{depth},recall,{aggregate_recall}\n')
+                file.write(f'{depth},f_score,{aggregate_fscore}\n\n')
 
             mod_end = time.time()
 

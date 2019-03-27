@@ -155,7 +155,7 @@ for smpl in samples:
                 if mod_frame[column].max() == mod_frame[column].min():
                     mod_frame[column] = 0
                 else:
-                    mod_frame[column] = (mod_frame[column] - mod_frame[column].min()) / (mod_frame[column].max() - mod_frame[column].min())
+                    mod_frame[column] = (mod_frame[column] - mod_frame[column].mean()) / (mod_frame[column].max() - mod_frame[column].std())
 
         for atbt in attributes:
 

@@ -1,8 +1,0 @@
-digraph Tree {
-node [shape=box, style="filled", color="black"] ;
-0 [label="due_vs_submission_date <= -0.0\ngini = 0.5\nsamples = 26852\nvalue = [13426, 13426]", fillcolor="#e5813900"] ;
-1 [label="gini = 0.289\nsamples = 7286\nvalue = [6009, 1277]", fillcolor="#e58139c9"] ;
-0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
-2 [label="gini = 0.471\nsamples = 19566\nvalue = [7417, 12149]", fillcolor="#399de563"] ;
-0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
-}

@@ -1,6 +1,4 @@
 import os
-import shutil
-import sys
 import time
 
 import numpy as np
@@ -8,9 +6,7 @@ import pandas as pd
 
 from imblearn.over_sampling import SMOTE
 
-from sklearn.metrics import confusion_matrix as cmat
-from sklearn.model_selection import StratifiedKFold
-from sklearn.tree import export_graphviz as eg
+from sklearn.metrics import confusion_matrix
 from sklearn.tree import DecisionTreeClassifier
 
 student_attributes = ['gender',
@@ -110,163 +106,119 @@ activity_attributes_by_interval = ['due_vs_submission_date',
                                    'htmlactivity_clicks_by_interval',
                                    'htmlactivity_clicks_by_interval_change']
 
-# if os.path.exists('./dt-output'):
-#     shutil.rmtree('./dt-output')
+samples = ['non-smote', 'smote']
 
-# if os.path.exists('./trees'):
-#     shutil.rmtree('./trees')
-
-# os.mkdir('./dt-output')
-# os.mkdir('./dt-output/non-smote')
-# os.mkdir('./dt-output/smote')
-
-# os.mkdir('./trees')
-# os.mkdir('./trees/non-smote')
-# os.mkdir('./trees/smote')
-
-# sample = 'non-smote'
-sample = 'smote'
+attributes = {'asmt': assessment_attributes,
+              'asmt_stdnt': assessment_attributes + student_attributes,
+              'asmt_abd': assessment_attributes + activity_attributes_by_days,
+              'asmt_abi': assessment_attributes + activity_attributes_by_interval,
+              'asmt_stdnt_abd': assessment_attributes + student_attributes + activity_attributes_by_days,
+              'asmt_stdnt_abi': assessment_attributes + student_attributes + activity_attributes_by_interval}
 
 modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'zzz']
 
-titles = ['asmt', 'asmt_stdnt', 'asmt_abd', 'asmt_abi', 'asmt_stdnt_abd', 'asmt_stdnt_abi']
+with open('./dt-results.csv', 'w') as file:
+    file.write('module,attributes,sample,accuracy,fscore,precision,recall\n')
 
-for title in titles:
+for smpl in samples:
 
     for mod in modules:
 
-        with open(f'./dt-output/{sample}/{mod}-{title}.txt', 'w') as file:
-            file.write(f'{mod}-{title}\n\n')
+        # Record start time for the module
+        mod_start = time.time()
 
-        for depth in range(1,11):
+        # Read the appropriate CSV file into a dataframe
+        mod_frame = pd.read_csv(f'./data/_composite/{mod}_composite.csv')
 
-            mod_start = time.time()
+        # Drop rows containing one or more missing value
+        mod_frame = mod_frame.dropna()
 
-            print(f'\nBeginning Module {mod.upper()} ({title}, depth {depth}) ...')
+        # Drop columns irrelevant to classification
+        mod_frame = mod_frame.drop(columns=['code_module', 'id_student', 'id_assessment'])
 
-            # Read the appropriate CSV file as a dataframe
-            mod_frame = pd.read_csv(f'./data/_composite/{mod}_composite.csv')
+        # Fix typo in original data set for consistency
+        mod_frame['imd_band'] = mod_frame['imd_band'].transform(lambda x: '10-20%' if x == '10-20' else x)
 
-            # Separate the class column and convert scores to 'pass' or 'fail'
-            y = mod_frame['score'].apply(lambda x: 'pass' if x >= 40 else 'fail')
+        # Fix columns that were cast as float64 to int64
+        mod_frame['date'] = mod_frame['date'].astype(np.int64)
+        mod_frame['due_vs_submission_date'] = mod_frame['due_vs_submission_date'].astype(np.int64)
 
-            # Drop columns that are irrelevant to classification
-            drop_cols = ['code_module',
-                        'code_presentation',
-                        'id_student',
-                        'id_assessment',
-                        'score']
+        # Recast imd_band as an ordinal attribute
+        mod_frame['imd_band'] = mod_frame['imd_band'].transform(lambda x: int(x.split('-')[1].split('%')[0]) / 100)
 
-            X = mod_frame.drop(columns=drop_cols)
+        # Recast age_band as an ordinal attribute
+        mod_frame['age_band'] = mod_frame['age_band'].transform(lambda x: 0.0 if x == '0-35' else (0.5 if x == '35-55' else 1.0))
 
-            # Fix typo in original data for consistency
-            X['imd_band'] = X['imd_band'].transform(
-                lambda x: '10-20%' if x == '10-20' else x)
+        # Normalize non-object and non-score columns
+        for column in list(mod_frame):
+            if mod_frame[column].dtypes != np.object and column != 'score':
+                if mod_frame[column].max() == mod_frame[column].min():
+                    mod_frame[column] = 0
+                else:
+                    mod_frame[column] = (mod_frame[column] - mod_frame[column].min()) / (mod_frame[column].max() - mod_frame[column].min())
 
-            if title == 'asmt':
-                X = X[assessment_attributes]
-            elif title == 'asmt_stdnt':
-                X = X[assessment_attributes + student_attributes]
-            elif title == 'asmt_abd':
-                X = X[assessment_attributes + activity_attributes_by_days]
-            elif title == 'asmt_abi':
-                X = X[assessment_attributes + activity_attributes_by_interval]
-            elif title == 'asmt_stdnt_abd':
-                X = X[assessment_attributes + student_attributes + activity_attributes_by_days]
-            elif title == 'asmt_stndt_abi':
-                X = X[assessment_attributes + student_attributes + activity_attributes_by_interval]
+        for atbt in attributes:
 
-            # Use one-hot-encoding for categorical variables
-            X = pd.get_dummies(X)
+            # Record start time for the attribute subset
+            atbt_start = time.time()
 
-            # NORMALIZATION
+            # Retain only the selected subset of attributes
+            atbt_frame = mod_frame[['code_presentation'] + attributes[atbt] + ['score']]
 
-            # Initialize for stratified k-fold cross-validation
-            skf = StratifiedKFold(n_splits=10, shuffle=True, random_state=0)
+            # Use one-hot encoding for the categorical attributes (other than code_presentation)
+            enc_cols = [x for x in list(atbt_frame) if x != 'code_presentation' and atbt_frame[x].dtype == np.object]
+            atbt_frame = pd.get_dummies(atbt_frame, columns=enc_cols)
 
-            aggregate_accuracy = 0
-            aggregate_precision = 0
-            aggregate_recall = 0
-            aggregate_fscore = 0
+            # Set aside the most recent presentation (2014J) as the testing set
+            test = atbt_frame[atbt_frame['code_presentation'] == '2014J']
 
-            fold = 0
+            # Retain data from all previous semesters as the training set
+            train = atbt_frame[atbt_frame['code_presentation'] != '2014J']
 
-            for train_index, test_index in skf.split(X, y):
+            # Drop columns irrelevant to classification
+            test = test.drop(columns=['code_presentation'])
+            train = train.drop(columns=['code_presentation'])
 
-                fold += 1
+            # Separate predictive attributes from classification labels
+            # Cast score attribute as binary 'pass' / 'fail'
+            X_train = train.drop(columns=['score'])
+            y_train = train['score'].apply(lambda x: 'pass' if x >= 40 else 'fail')
 
-                X_train, X_test = X.iloc[train_index], X.iloc[test_index]
-                y_train, y_test = y.iloc[train_index], y.iloc[test_index]
+            X_test = test.drop(columns=['score'])
+            y_test = test['score'].apply(lambda x: 'pass' if x >= 40 else 'fail')
 
-                X_smote, y_smote = SMOTE(random_state=0).fit_resample(X_train, y_train)
+            if smpl == 'smote':
+                X_train, y_train = SMOTE(random_state=0).fit_resample(X_train, y_train)
 
-                dt = DecisionTreeClassifier(max_depth=depth, random_state=0)
+            # Initialize and train the Decision Tree classifier
+            dt = DecisionTreeClassifier(random_state=0)
+            dt.fit(X_train, y_train)
 
-                # norm_pass = 0
-                # norm_fail = 0
+            # Predict classes for the test set
+            y_hat = dt.predict(X_test)
 
-                # smote_pass = 0
-                # smote_fail = 0
+            # Generate the confusion matrix for the predictions
+            tn, fp, fn, tp = confusion_matrix(y_hat, y_test).ravel()
 
-                # for item in y_train:
-                #     if item == 'pass':
-                #         norm_pass += 1
-                #     else:
-                #         norm_fail += 1
+            # Calculate performance metrics from the confusion matrix
+            accuracy = (tp + tn) / (tp + tn + fp + fn)
+            precision = (tp) / (tp + fp)
+            recall = (tp) / (tp + fn)
+            fscore = (2 * tp) / ((2 * tp) + tn + fp + fn)
 
-                # for item in y_smote:
-                #     if item == 'pass':
-                #         smote_pass += 1
-                #     else:
-                #         smote_fail += 1
+            atbt_end = time.time()
 
-                # print(f'NORM:  {norm_pass} pass, {norm_fail} fail ({round(((norm_pass) / (norm_pass + norm_fail)) * 100, 2)}% pass)')
-                # print(f'SMOTE: {smote_pass} pass, {smote_fail} fail ({round(((smote_pass) / (smote_pass + smote_fail)) * 100, 2)}% pass)')
-                # print('----------')
+            print(f'\n{mod.upper()} : {atbt.upper()} ({smpl.upper()})')
+            print('--------------------')
+            print(f'ACCURACY:  \t{round(accuracy, 2)}')
+            print(f'F-SCORE:   \t{round(fscore, 2)}')
+            print(f'PRECISION: \t{round(precision, 2)}')
+            print(f'RECALL:    \t{round(recall, 2)}')
+            print('--------------------')
+            print(f'[{round(atbt_end - atbt_start, 2)} sec]')
 
-                if sample == 'non-smote':
-                    dt.fit(X_train, y_train)
-                elif sample == 'smote':
-                    dt.fit(X_smote, y_smote)
+            with open('./dt-results.csv', 'a') as file:
+                file.write(f'{mod},{atbt},{smpl},{accuracy},{fscore},{precision},{recall}\n')
 
-                # eg(dt, out_file=f'./trees/{sample}/{mod}-{title}-{depth}.dot', feature_names=list(X_train), filled=True)
-                # os.system(f'dot -Tpng ./trees/{sample}/{mod}-{title}-{depth}.dot -o ./trees/{sample}/_{mod}-{title}-{depth}.png')
-
-                y_hat = dt.predict(X_test)
-
-                tn, fp, fn, tp = cmat(y_hat, y_test).ravel()
-
-                accuracy = (tp + tn) / (tp + tn + fp + fn)
-                precision = (tp) / (tp + fp)
-                recall = (tp) / (tp + fn)
-                fscore = (2 * tp) / ((2 * tp) + tn + fp + fn)
-
-                aggregate_accuracy += accuracy
-                aggregate_precision += precision
-                aggregate_recall += recall
-                aggregate_fscore += fscore
-
-                # print(f'\n{mod.upper()}-{fold}')
-                # print('--------------------')
-                # print(f'ACCURACY:  \t{round(accuracy, 2)}')
-                # print(f'PRECISION: \t{round(precision, 2)}')
-                # print(f'RECALL:    \t{round(recall, 2)}')
-                # print(f'F-SCORE:   \t{round(fscore, 2)}')
-                # print('--------------------')
-
-                print(f'\t... Finished module {mod.upper()}, fold {fold}')
-
-            aggregate_accuracy = aggregate_accuracy / 10
-            aggregate_precision = aggregate_precision / 10
-            aggregate_recall = aggregate_recall / 10
-            aggregate_fscore = aggregate_fscore / 10
-
-            with open(f'./dt-output/{sample}/{mod}-{title}.txt', 'a') as file:
-                file.write(f'{depth},accuracy,{aggregate_accuracy}\n')
-                file.write(f'{depth},precision,{aggregate_precision}\n')
-                file.write(f'{depth},recall,{aggregate_recall}\n')
-                file.write(f'{depth},f_score,{aggregate_fscore}\n\n')
-
-            mod_end = time.time()
-
-            print(f'Module {mod.upper()} ({title}, depth {depth}) DONE [{round(mod_end - mod_start)} sec]\n\n')
+        mod_end = time.time()
+            

@@ -1,8 +1,0 @@
-digraph Tree {
-node [shape=box, style="filled", color="black"] ;
-0 [label="assessment_type_CMA <= 0.5\ngini = 0.5\nsamples = 26852\nvalue = [13426, 13426]", fillcolor="#e5813900"] ;
-1 [label="gini = 0.486\nsamples = 11854\nvalue = [6916, 4938]", fillcolor="#e5813949"] ;
-0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
-2 [label="gini = 0.491\nsamples = 14998\nvalue = [6510, 8488]", fillcolor="#399de53b"] ;
-0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
-}

@@ -1,8 +1,0 @@
-digraph Tree {
-node [shape=box, style="filled", color="black"] ;
-0 [label="homepage_clicks_by_days <= 12.992\ngini = 0.5\nsamples = 5502\nvalue = [2751, 2751]", fillcolor="#e5813900"] ;
-1 [label="gini = 0.428\nsamples = 3194\nvalue = [2204, 990]", fillcolor="#e581398c"] ;
-0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
-2 [label="gini = 0.362\nsamples = 2308\nvalue = [547, 1761]", fillcolor="#399de5b0"] ;
-0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
-}

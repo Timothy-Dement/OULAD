@@ -4,46 +4,19 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-sample = 'non-smote'
+results_file = './dt-results.csv'
 
-for path in os.listdir(f'./dt-output/{sample}/'):
+df = pd.read_csv(results_file)
 
-    title = None
+samples = ['non-smote', 'smote']
 
-    accuracy = []
-    precision = []
-    recall = []
-    f_score = []
+modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'zzz']
 
-    with open (f'./dt-output/{sample}/{path}') as file:
-        for index, line in enumerate(file):
-            if index == 0:
-                title = line
-            else:
-                if line.strip():
-                    # depth = int(line.split('[')[1].split(']')[0])
-                    metric = line.split(' ')[1].lower().replace(':', '')
-                    value = float(line.split(':')[1].strip())
+attributes = ['asmt', 'asmt_stdnt', 'asmt_abd', 'asmt_abi', 'asmt_stdnt_abd', 'asmt_stdnt_abi']
 
-                    if metric == 'accuracy':
-                        accuracy.append(value)
-                    elif metric == 'precision':
-                        precision.append(value)
-                    elif metric == 'recall':
-                        recall.append(value)
-                    elif metric == 'f-score':
-                        f_score.append(value)
+for smpl in samples:
+    smpl_df = df[df['sample'] == smpl]
+    for mod in modules:
+        mod_df = smpl_df[smpl_df['module'] == mod]
+        
 
-    depth = list(range(1,11))
-
-    df = pd.DataFrame()
-
-    df['depth'] = depth
-    df['accuracy'] = accuracy
-    df['precision'] = precision
-    df['recall'] = recall
-    df['f_score'] = f_score
-
-    sns.set()
-    sns.lineplot(data=df[['accuracy', 'precision', 'recall', 'f_score']]).set_title(title)
-    plt.show()

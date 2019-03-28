@@ -156,6 +156,21 @@ for smpl in samples:
         # Recast age_band as an ordinal attribute
         mod_frame['age_band'] = mod_frame['age_band'].transform(lambda x: 0.0 if x == '0-35' else (0.5 if x == '35-55' else 1.0))
 
+        def he_transform(value):
+            if value == 'Post Graduate Qualification':
+                return 1.00
+            elif value == 'HE Qualification':
+                return 0.75
+            elif value == 'A Level or Equivalent':
+                return 0.50
+            elif value == 'Lower Than A Level':
+                return 0.25
+            else:
+                return 0.00
+
+        # Recast highest_education as an ordinal attribute
+        mod_frame['highest_education'] = mod_frame['highest_education'].transform(he_transform)
+
         # Normalize non-object and non-score columns
         for column in list(mod_frame):
             if mod_frame[column].dtypes != np.object and column != 'score':

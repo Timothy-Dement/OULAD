@@ -1,3 +1,8 @@
+# TODO
+
+- highest_education ordinal?
+- Prior grade?
+
 # NOTES
 
 - Classifiers used in Systematic Review:

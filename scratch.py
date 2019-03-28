@@ -4,4 +4,7 @@ import pandas as pd
 import sys
 import time
 
-print(list(range(1,11)))
+df = pd.read_csv('./data/_composite/zzz_composite.csv')
+
+for item in df['highest_education'].unique():
+    print(item)

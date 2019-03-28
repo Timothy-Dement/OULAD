@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
+scale = (6.5, 4)
+
 options = ['compare_attributes', 'compare_samples']
 
 if not os.path.exists('./charts'):
@@ -61,7 +63,7 @@ for option in options:
             print('--------------------\n')
 
             sns.set(style='whitegrid')
-            _, ax = plt.subplots(figsize=(6.5, 4.5))
+            _, ax = plt.subplots(figsize=scale)
 
             mod_plot = sns.barplot(ax=ax, x='score', y='attributes', hue='metric', data=norm_df)
 
@@ -115,7 +117,7 @@ for option in options:
                 diff_df.at[index, 'score'] = smote_df.at[index, 'score'] - nonsmote_df.at[index, 'score']
 
             sns.set(style='whitegrid')
-            _, ax = plt.subplots(figsize=(6.5, 4.5))
+            _, ax = plt.subplots(figsize=scale)
 
             mod_plot = sns.barplot(ax=ax, x='score', y='attributes', hue='metric', data=diff_df)
 

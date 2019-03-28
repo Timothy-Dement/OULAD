@@ -9,6 +9,8 @@ from imblearn.over_sampling import SMOTE
 from sklearn.metrics import confusion_matrix
 from sklearn.tree import DecisionTreeClassifier
 
+all_start = time.time()
+
 student_attributes = ['gender',
                       'region',
                       'highest_education',
@@ -109,16 +111,21 @@ activity_attributes_by_interval = ['due_vs_submission_date',
 samples = ['non-smote', 'smote']
 
 attributes = {'asmt': assessment_attributes,
+              'stdnt': student_attributes,
+              'abd': activity_attributes_by_days,
+              'abi': activity_attributes_by_interval,
               'asmt_stdnt': assessment_attributes + student_attributes,
               'asmt_abd': assessment_attributes + activity_attributes_by_days,
               'asmt_abi': assessment_attributes + activity_attributes_by_interval,
+              'stdnt_abd': student_attributes + activity_attributes_by_days,
+              'stdnt_abi': student_attributes + activity_attributes_by_interval,
               'asmt_stdnt_abd': assessment_attributes + student_attributes + activity_attributes_by_days,
               'asmt_stdnt_abi': assessment_attributes + student_attributes + activity_attributes_by_interval}
 
 modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'zzz']
 
 with open('./dt-results.csv', 'w') as file:
-    file.write('module,attributes,sample,accuracy,fscore,precision,recall\n')
+    file.write('module,attributes,sample,metric,score\n')
 
 for smpl in samples:
 
@@ -218,7 +225,13 @@ for smpl in samples:
             print(f'[{round(atbt_end - atbt_start, 2)} sec]')
 
             with open('./dt-results.csv', 'a') as file:
-                file.write(f'{mod},{atbt},{smpl},{accuracy},{fscore},{precision},{recall}\n')
+                file.write(f'{mod},{atbt},{smpl},accuracy,{accuracy}\n')
+                file.write(f'{mod},{atbt},{smpl},fscore,{fscore}\n')
+                file.write(f'{mod},{atbt},{smpl},precision,{precision}\n')
+                file.write(f'{mod},{atbt},{smpl},recall,{recall}\n')
 
         mod_end = time.time()
-            
+
+all_end = time.time()
+
+print(f'\n==> TOTAL TIME: {round(all_end - all_start, 2)} sec\n')

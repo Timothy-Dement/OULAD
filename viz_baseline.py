@@ -1,3 +1,10 @@
+import os
+
+from matplotlib import pyplot as plt
+from matplotlib import rcParams
+
+rcParams.update({'figure.autolayout': True})
+
 import pandas as pd
 import seaborn as sns
 
@@ -6,6 +13,11 @@ knn_df = pd.read_csv('./results/knn-results.csv')
 nb_df = pd.read_csv('./results/nb-results.csv')
 rf_df = pd.read_csv('./results/rf-results.csv')
 svm_df = pd.read_csv('./results/svm-results.csv')
+
+if not os.path.exists('./charts'):
+    os.mkdir('./charts')
+
+scale = (20, 5)
 
 for mod in ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'zzz']:
 
@@ -40,12 +52,31 @@ for mod in ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'zzz']:
     prec_df = master[master['metric'] == 'precision']
     rec_df = master[master['metric'] == 'recall']
 
-    # if mod == '':
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None):
+    acc_df = acc_df.sort_values(by='score', ascending=False)
+    fscore_df = fscore_df.sort_values(by='score', ascending=False)
+    prec_df = prec_df.sort_values(by='score', ascending=False)
+    rec_df = rec_df.sort_values(by='score', ascending=False)
 
-        print(f'\n+-----+\n| {mod.upper()} |\n+-----+\n')
+    for metric_df in [acc_df, fscore_df, prec_df, rec_df]:
 
-        # print(acc_df.sort_values(by='score'), '\n')
-        # print(fscore_df.sort_values(by='score'), '\n')
-        # print(prec_df.sort_values(by='score'), '\n')
-        print(rec_df.sort_values(by='score'), '\n')
+        metric = metric_df['metric'].unique()[0].capitalize()
+
+        sns.set(style='whitegrid')
+        _, ax = plt.subplots(figsize=scale)
+
+        mod_plot = sns.barplot(ax=ax, x='id', y='score', data=metric_df, color='#008080')
+
+        if mod == 'zzz':
+            mod_plot.set_title(f"{metric} - All Modules Combined", fontsize=15)
+        else:
+            mod_plot.set_title(f"{metric} - Module {mod.upper()}", fontsize=15)
+
+        plt.xticks(rotation=90)
+        plt.ylabel('Metric Score')
+        plt.xlabel('Model')
+        plt.tick_params(labelsize=8)
+
+        mod_plot.figure.savefig(f'./charts/bl-{mod}-{metric.lower()}.png')
+
+        plt.clf()
+        plt.close('all')

@@ -236,9 +236,9 @@ for clf in classifiers:
                 elif clf == 'nb':
                     model = GaussianNB()
                 elif clf == 'knn':
-                    model = KNeighborsClassifier()
+                    model = KNeighborsClassifier(n_jobs=-1)
                 elif clf == 'rf':
-                    model = RandomForestClassifier(random_state=0)
+                    model = RandomForestClassifier(n_jobs=-1, random_state='0')
 
                 model.fit(X_train, y_train)
 

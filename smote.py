@@ -6,18 +6,12 @@ import pandas as pd
 
 from imblearn.over_sampling import SMOTE
 
-from sklearn.cluster import DBSCAN, KMeans
-
-# from sklearn.ensemble import RandomForestClassifier
-# from sklearn.metrics import confusion_matrix
-# from sklearn.naive_bayes import GaussianNB
-# from sklearn.neighbors import KNeighborsClassifier
-# from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
-
-# import warnings
-# from sklearn.exceptions import ConvergenceWarning
-# warnings.filterwarnings(action='ignore', category=ConvergenceWarning)
 
 all_start = time.time()
 
@@ -118,6 +112,10 @@ activity_attributes_by_interval = ['due_vs_submission_date',
                                    'htmlactivity_clicks_by_interval',
                                    'htmlactivity_clicks_by_interval_change']
 
+samples = ['non-smote', 'smote']
+
+classifiers = ['dt', 'svm', 'nb', 'knn', 'rf']
+
 attributes = {'asmt': assessment_attributes,
               'stdnt': student_attributes,
               'abd': activity_attributes_by_days,
@@ -130,21 +128,18 @@ attributes = {'asmt': assessment_attributes,
               'asmt_stdnt_abd': assessment_attributes + student_attributes + activity_attributes_by_days,
               'asmt_stdnt_abi': assessment_attributes + student_attributes + activity_attributes_by_interval}
 
-samples = ['non-smote', 'smote']
-
 modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'zzz']
 
-classifiers = ['dt', 'knn', 'nb', 'rf', 'svm']
-
-cluster_methods = ['kmeans', 'dbscan']
-
-attributes = {'asmt': assessment_attributes}
-samples = ['non-smote']
-modules = ['aaa']
-classifiers = ['dt']
-cluster_methods = ['kmeans']
+if not os.path.exists('./results'):
+    os.mkdir('./results')
 
 for clf in classifiers:
+
+    with open(f'./results/{clf}_results.csv', 'w') as file:
+        file.write('module,attributes,sample,metric,score\n')
+
+    with open(f'./results/{clf}_smote_results.csv', 'w') as file:
+        file.write('module,attributes,sample,metric,score\n')
 
     for smpl in samples:
 
@@ -160,25 +155,20 @@ for clf in classifiers:
             mod_frame = mod_frame.dropna()
 
             # Drop columns irrelevant to classification
-            mod_frame = mod_frame.drop(
-                columns=['code_module', 'id_student', 'id_assessment'])
+            mod_frame = mod_frame.drop(columns=['code_module', 'id_student', 'id_assessment'])
 
             # Fix typo in original data set for consistency
-            mod_frame['imd_band'] = mod_frame['imd_band'].transform(
-                lambda x: '10-20%' if x == '10-20' else x)
+            mod_frame['imd_band'] = mod_frame['imd_band'].transform(lambda x: '10-20%' if x == '10-20' else x)
 
             # Fix columns that were cast as float64 to int64
             mod_frame['date'] = mod_frame['date'].astype(np.int64)
-            mod_frame['due_vs_submission_date'] = mod_frame['due_vs_submission_date'].astype(
-                np.int64)
+            mod_frame['due_vs_submission_date'] = mod_frame['due_vs_submission_date'].astype(np.int64)
 
             # Recast imd_band as an ordinal attribute
-            mod_frame['imd_band'] = mod_frame['imd_band'].transform(
-                lambda x: int(x.split('-')[1].split('%')[0]) / 100)
+            mod_frame['imd_band'] = mod_frame['imd_band'].transform(lambda x: int(x.split('-')[1].split('%')[0]) / 100)
 
             # Recast age_band as an ordinal attribute
-            mod_frame['age_band'] = mod_frame['age_band'].transform(
-                lambda x: 0.0 if x == '0-35' else (0.5 if x == '35-55' else 1.0))
+            mod_frame['age_band'] = mod_frame['age_band'].transform(lambda x: 0.0 if x == '0-35' else (0.5 if x == '35-55' else 1.0))
 
             def he_transform(value):
                 if value == 'Post Graduate Qualification':
@@ -215,89 +205,105 @@ for clf in classifiers:
                 enc_cols = [x for x in list(atbt_frame) if x != 'code_presentation' and atbt_frame[x].dtype == np.object]
                 atbt_frame = pd.get_dummies(atbt_frame, columns=enc_cols)
 
-                # Cast score attribute as binary 'fail' (1) or 'pass' (0)
-                atbt_frame['score'] = atbt_frame['score'].apply(lambda x: 0 if x >= 40 else 1)
-
                 # Set aside the most recent presentation (2014J) as the testing set
                 test = atbt_frame[atbt_frame['code_presentation'] == '2014J']
 
                 # Retain data from all previous semesters as the training set
                 train = atbt_frame[atbt_frame['code_presentation'] != '2014J']
 
-                #
-                #    When do we do we do SMOTE in relation to clustering?
-                #
-                #
-                #
-
                 # Drop columns irrelevant to classification
                 test = test.drop(columns=['code_presentation'])
                 train = train.drop(columns=['code_presentation'])
 
                 # Separate predictive attributes from classification labels
+                # Cast score attribute as binary 'pass' (0) / 'fail' (1)
                 X_train = train.drop(columns=['score'])
-                y_train = train['score']
+                y_train = train['score'].apply(lambda x: 0 if x >= 40 else 1)
 
                 X_test = test.drop(columns=['score'])
-                y_test = test['score']
+                y_test = test['score'].apply(lambda x: 0 if x >= 40 else 1)
 
-                # if smpl == 'smote':
-                #     X_train, y_train = SMOTE(random_state=0).fit_resample(X_train, y_train)
+                if smpl == 'smote':
+                    X_train, y_train = SMOTE(random_state=0).fit_resample(X_train, y_train)
 
-                train['score'] = train['score'].apply(lambda x: 0 if x >= 40 else 1)
+                # Initialize and train the Decision Tree classifier
+                # dt = DecisionTreeClassifier(random_state=0)
+                # dt.fit(X_train, y_train)
 
-                print(f'{smpl.upper()}\t{mod.upper()}\t{atbt.upper()}\n')
+                model = None
 
-                for 
+                if clf == 'dt':
+                    model = DecisionTreeClassifier(random_state=0)
+                elif clf == 'svm':
+                    model = SVC(gamma='auto', random_state=0)
+                elif clf == 'nb':
+                    model = GaussianNB()
+                elif clf == 'knn':
+                    model = KNeighborsClassifier(n_jobs=-1)
+                elif clf == 'rf':
+                    model = RandomForestClassifier(n_jobs=-1, random_state='0')
 
-                # km = KMeans(n_clusters=num, n_jobs=-1,random_state=0).fit(train)
-                km = DBSCAN(n_jobs=-1).fit(train)
+                model.fit(X_train, y_train)
 
-                cluster_labels = km.labels_
+                # Predict classes for the test set
+                y_hat = model.predict(X_test)
 
-                train['cluster'] = cluster_labels
+                # Generate the confusion matrix for the predictions
+                tn, fp, fn, tp = confusion_matrix(y_hat, y_test).ravel()
 
-                all_fail = len(train[train['score'] == 1])
-                all_pass = len(train[train['score'] == 0])
-                all_total = len(train.index)
+                # Calculate performance metrics from the confusion matrix
 
-                all_fpct = all_fail / all_total if all_total != 0 else 0
-                all_ppct = all_pass / all_total if all_total != 0 else 0
+                accuracy = None
+                precision = None
+                recall = None
+                fscore = None
 
-                # print(f'{mod.upper()}-{atbt.upper()} -- No Clusters:  ', f'\tFail [{all_fail}]:  ', round(all_fpct, 2), f'Pass [{all_pass}]:  ', round(all_ppct, 2), '\n')
-
-                w_avg = 0
-
-                for clst in pd.Series(cluster_labels).unique():
-
-                    clst_train = train[train['cluster'] == clst]
-                    
-                    fail_count = len(clst_train[clst_train['score'] == 1])
-                    pass_count = len(clst_train[clst_train['score'] == 0])
-
-                    total_count = len(clst_train.index)
-
-                    clst_fail_pct = fail_count / total_count if total_count != 0 else 0
-                    clst_pass_pct = pass_count / total_count if total_count != 0 else 0
-
-                    # print(f'Cluster {clst} [{total_count}]:  ', f'\tFail [{fail_count}]:  ', round(clst_fail_pct, 2), f'\tPass [{pass_count}]:  ', round(clst_pass_pct, 2))
-
-                    max_pct = max(clst_fail_pct, clst_pass_pct)
-
-                    w_avg += max_pct * (total_count / all_total)
-
-                pass_color = '\033[92m'
-                fail_color = '\033[91m'
-                end_color = '\033[0m'
-
-                if np.sign(w_avg - max(all_fpct, all_ppct)) == -1.0:
-                    color = fail_color
+                if (tp + tn + fp + fn) == 0:
+                    accuracy = 0.0
                 else:
-                    color = pass_color
+                    accuracy = (tp + tn) / (tp + tn + fp + fn)
 
-                print(f'{num} ==> \t( {color}{np.sign(w_avg - max(all_fpct, all_ppct))}{end_color} ) \t[ {color}{round(w_avg - max(all_fpct, all_ppct), 8)}{end_color} ]')
+                if (tp + fp) == 0:
+                    precision = 0.0
+                else:
+                    precision = (tp) / (tp + fp)
+
+                if (tp + fn) == 0:
+                    recall = 0.0
+                else:
+                    recall = (tp) / (tp + fn)
+
+                if ((2 * tp) + tn + fp + fn) == 0:
+                    fscore = 0.0
+                else:
+                    fscore = (2 * tp) / ((2 * tp) + tn + fp + fn)
+
+                atbt_end = time.time()
+
+                print(f'\n[{clf.upper()}] {mod.upper()} : {atbt.upper()} ({smpl.upper()})')
+                print('--------------------')
+                print(f'ACCURACY:  \t{accuracy}')
+                print(f'F-SCORE:   \t{fscore}')
+                print(f'PRECISION: \t{precision}')
+                print(f'RECALL:    \t{recall}')
+                print('--------------------')
+                print(f'[{round(atbt_end - atbt_start, 2)} sec]')
+
+                if smpl == 'non-smote':
+                    with open(f'./results/{clf}_results.csv', 'a') as file:
+                        file.write(f'{mod},{atbt},{smpl},accuracy,{accuracy}\n')
+                        file.write(f'{mod},{atbt},{smpl},fscore,{fscore}\n')
+                        file.write(f'{mod},{atbt},{smpl},precision,{precision}\n')
+                        file.write(f'{mod},{atbt},{smpl},recall,{recall}\n')
+                elif smpl == 'smote':
+                    with open(f'./results/{clf}_smote_results.csv', 'a') as file:
+                        file.write(f'{mod},{atbt},{smpl},accuracy,{accuracy}\n')
+                        file.write(f'{mod},{atbt},{smpl},fscore,{fscore}\n')
+                        file.write(f'{mod},{atbt},{smpl},precision,{precision}\n')
+                        file.write(f'{mod},{atbt},{smpl},recall,{recall}\n')
 
             mod_end = time.time()
-            print()
 
     all_end = time.time()
+
+    print(f'\n[{clf.upper()}] ==> TOTAL TIME: {round(all_end - all_start, 2)} sec\n')

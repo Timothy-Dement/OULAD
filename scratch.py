@@ -4,19 +4,12 @@ import pandas as pd
 import sys
 import time
 
-df = pd.read_csv('./data/_composite/zzz_composite.csv')
+for clf in ['dt', 'knn', 'nb', 'rf', 'svm']:
 
-atbts = [x for x in list(df) if not 'interval' in x]
+    df = pd.read_csv(f'./results/{clf}-results.csv')
 
-print(len(atbts))
+    base_df = df[df['sample'] == 'non-smote']
+    smote_df = df[df['sample'] == 'smote']
 
-atbts.remove('score')
-atbts.remove('code_module')
-atbts.remove('code_presentation')
-atbts.remove('id_student')
-atbts.remove('id_assessment')
-
-print(len(atbts))
-
-for item in atbts:
-    print(item)
+    base_df.to_csv(f'./results/{clf}_results.csv', index=False)
+    smote_df.to_csv(f'./results/{clf}_smote_results.csv', index=False)

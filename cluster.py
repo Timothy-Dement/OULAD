@@ -136,18 +136,23 @@ classifiers = ['dt', 'knn', 'nb', 'rf', 'svm']
 
 cluster_methods = ['kmeans', 'dbscan']
 
-attributes = {'asmt': assessment_attributes}
-modules = ['aaa']
-classifiers = ['dt']
+# attributes = {'asmt': assessment_attributes}
+# modules = ['aaa']
+# classifiers = ['dt']
 cluster_methods = ['kmeans']
 
 for clf in classifiers:
 
-    for mod in modules:
+    with open(f'./results/{clf}_kmeans_results.csv', 'w') as file:
+        file.write('module,attributes,cluster,metric,score\n')
 
-        for cm in cluster_methods:
+    with open(f'./results/{clf}_dbscan_results.csv', 'w') as file:
+        file.write('module,attributes,cluster,metric,score\n')
 
-            # Record start time for the module
+    for cm in cluster_methods:
+
+        for mod in modules:
+
             mod_start = time.time()
 
             # Read the appropriate CSV file into a dataframe
@@ -227,63 +232,140 @@ for clf in classifiers:
 
                 # Separate predictive attributes from classification labels
                 X_train = train.drop(columns=['score'])
-                y_train = train['score'].apply(lambda x: 0 if x >= 40 else 1)
+                y_train = train['score']
+
+                X_train = X_train.drop_duplicates()
+                y_train = y_train.loc[X_train.index]
 
                 X_test = test.drop(columns=['score'])
-                y_test = test['score'].apply(lambda x: 0 if x >= 40 else 1)
+                y_test = test['score']
+
+                clust = None
 
                 if cm == 'kmeans':
-
+                    num_rows = len(X_train)
+                    if num_rows < 8:
+                        clust = KMeans(n_clusters=num_rows, random_state=0, n_jobs=-1).fit(X_train)
+                    else:
+                        clust = KMeans(random_state=0, n_jobs=-1).fit(X_train)
                 elif cm == 'dbscan':
+                    clust = DBSCAN(n_jobs=-1).fit(X_train)
 
-                # km = KMeans(n_clusters=num, n_jobs=-1,random_state=0).fit(train)
-                # km = DBSCAN(n_jobs=-1).fit(train)
+                cluster_labels = clust.labels_
+                
+                X_train['cluster'] = cluster_labels
 
-                # cluster_labels = km.labels_
+                cluster_models = {}
 
-                # train['cluster'] = cluster_labels
+                for cl in pd.Series(cluster_labels).unique():
 
-                # all_fail = len(train[train['score'] == 1])
-                # all_pass = len(train[train['score'] == 0])
-                # all_total = len(train.index)
+                    X_cl_train = X_train[X_train['cluster'] == cl]
+                    X_cl_train = X_cl_train.drop(columns=['cluster'])
 
-                # all_fpct = all_fail / all_total if all_total != 0 else 0
-                # all_ppct = all_pass / all_total if all_total != 0 else 0
+                    cl_indices = X_cl_train.index
+                    y_cl_train = y_train.loc[cl_indices]
 
-                # print(f'{mod.upper()}-{atbt.upper()} -- No Clusters:  ', f'\tFail [{all_fail}]:  ', round(all_fpct, 2), f'Pass [{all_pass}]:  ', round(all_ppct, 2), '\n')
+                    if len(pd.Series(y_cl_train).unique()) == 1:
 
-                # w_avg = 0
+                        label = y_cl_train.unique()[0]
+                        cluster_models[cl] = label
 
-                # for clst in pd.Series(cluster_labels).unique():
+                    else:
 
-                #     clst_train = train[train['cluster'] == clst]
-                    
-                #     fail_count = len(clst_train[clst_train['score'] == 1])
-                #     pass_count = len(clst_train[clst_train['score'] == 0])
+                        model = None
 
-                #     total_count = len(clst_train.index)
+                        if clf == 'dt':
+                            model = DecisionTreeClassifier(random_state=0)
+                        elif clf == 'svm':
+                            model = SVC(gamma='auto', random_state=0)
+                        elif clf == 'nb':
+                            model = GaussianNB()
+                        elif clf == 'knn':
+                            num_rows = len(X_cl_train.index)
+                            if num_rows < 5:
+                                model = KNeighborsClassifier(n_neighbors=num_rows, n_jobs=-1)
+                            else:
+                                model = KNeighborsClassifier(n_jobs=-1)
+                        elif clf == 'rf':
+                            model = RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=0)
 
-                #     clst_fail_pct = fail_count / total_count if total_count != 0 else 0
-                #     clst_pass_pct = pass_count / total_count if total_count != 0 else 0
+                        model.fit(X_cl_train, y_cl_train)
 
-                    # print(f'Cluster {clst} [{total_count}]:  ', f'\tFail [{fail_count}]:  ', round(clst_fail_pct, 2), f'\tPass [{pass_count}]:  ', round(clst_pass_pct, 2))
+                        cluster_models[cl] = model
 
-    #                 max_pct = max(clst_fail_pct, clst_pass_pct)
+                test_clusters = clust.predict(X_test)
 
-    #                 w_avg += max_pct * (total_count / all_total)
+                X_test['cluster'] = test_clusters
 
-    #             pass_color = '\033[92m'
-    #             fail_color = '\033[91m'
-    #             end_color = '\033[0m'
+                y_hat = y_test.copy(deep=True)
+                y_hat[:] = None
 
-    #             if np.sign(w_avg - max(all_fpct, all_ppct)) == -1.0:
-    #                 color = fail_color
-    #             else:
-    #                 color = pass_color
+                for index, row in X_test.iterrows():
 
-    #             print(f'{num} ==> \t( {color}{np.sign(w_avg - max(all_fpct, all_ppct))}{end_color} ) \t[ {color}{round(w_avg - max(all_fpct, all_ppct), 8)}{end_color} ]')
+                    row_cluster = int(row['cluster'])
+                    row_cluster_model = cluster_models[row_cluster]
 
-    #         mod_end = time.time()
-    #         print()
+                    if row_cluster_model == 0:
+                        y_hat[index] = 0
+                    elif row_cluster_model == 1:
+                        y_hat[index] = 1
+                    else:
+                        y_hat[index] = row_cluster_model.predict(X_test.loc[[index]].drop(columns=['cluster']))
 
-    # all_end = time.time()
+                # Generate the confusion matrix for the predictions
+                tn, fp, fn, tp = confusion_matrix(y_hat, y_test).ravel()
+
+                accuracy = None
+                precision = None
+                recall = None
+                fscore = None
+
+                if (tp + tn + fp + fn) == 0:
+                    accuracy = 0.0
+                else:
+                    accuracy = (tp + tn) / (tp + tn + fp + fn)
+
+                if (tp + fp) == 0:
+                    precision = 0.0
+                else:
+                    precision = (tp) / (tp + fp)
+
+                if (tp + fn) == 0:
+                    recall = 0.0
+                else:
+                    recall = (tp) / (tp + fn)
+
+                if ((2 * tp) + tn + fp + fn) == 0:
+                    fscore = 0.0
+                else:
+                    fscore = (2 * tp) / ((2 * tp) + tn + fp + fn)
+
+                atbt_end = time.time()
+
+                print(f'\n[{clf.upper()}] {mod.upper()} : {atbt.upper()} ({cm.upper()})')
+                print('--------------------')
+                print(f'ACCURACY:  \t{accuracy}')
+                print(f'F-SCORE:   \t{fscore}')
+                print(f'PRECISION: \t{precision}')
+                print(f'RECALL:    \t{recall}')
+                print('--------------------')
+                print(f'[{round(atbt_end - atbt_start, 2)} sec]')
+
+                if cm == 'kmeans':
+                    with open(f'./results/{clf}_kmeans_results.csv', 'a') as file:
+                        file.write(f'{mod},{atbt},{cm},accuracy,{accuracy}\n')
+                        file.write(f'{mod},{atbt},{cm},fscore,{fscore}\n')
+                        file.write(f'{mod},{atbt},{cm},precision,{precision}\n')
+                        file.write(f'{mod},{atbt},{cm},recall,{recall}\n')
+                elif cm == 'dbscan':
+                    with open(f'./results/{clf}_dbscan_results.csv', 'a') as file:
+                        file.write(f'{mod},{atbt},{cm},accuracy,{accuracy}\n')
+                        file.write(f'{mod},{atbt},{cm},fscore,{fscore}\n')
+                        file.write(f'{mod},{atbt},{cm},precision,{precision}\n')
+                        file.write(f'{mod},{atbt},{cm},recall,{recall}\n')
+
+        mod_end = time.time()
+
+all_end = time.time()
+
+print(f'\n\t==> TOTAL TIME: {round(all_end - all_start, 2)} sec\n')

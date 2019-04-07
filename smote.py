@@ -114,8 +114,7 @@ activity_attributes_by_interval = ['due_vs_submission_date',
 
 samples = ['non-smote', 'smote']
 
-# classifiers = ['dt', 'svm', 'nb', 'knn', 'rf']
-classifiers = ['rf']
+classifiers = ['dt', 'svm', 'nb', 'knn', 'rf']
 
 attributes = {'asmt': assessment_attributes,
               'stdnt': student_attributes,
@@ -226,10 +225,6 @@ for clf in classifiers:
 
                 if smpl == 'smote':
                     X_train, y_train = SMOTE(random_state=0).fit_resample(X_train, y_train)
-
-                # Initialize and train the Decision Tree classifier
-                # dt = DecisionTreeClassifier(random_state=0)
-                # dt.fit(X_train, y_train)
 
                 model = None
 

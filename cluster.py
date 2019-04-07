@@ -8,11 +8,11 @@ from imblearn.over_sampling import SMOTE
 
 from sklearn.cluster import DBSCAN, KMeans
 
-# from sklearn.ensemble import RandomForestClassifier
-# from sklearn.metrics import confusion_matrix
-# from sklearn.naive_bayes import GaussianNB
-# from sklearn.neighbors import KNeighborsClassifier
-# from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
 # import warnings
@@ -232,56 +232,58 @@ for clf in classifiers:
                 X_test = test.drop(columns=['score'])
                 y_test = test['score'].apply(lambda x: 0 if x >= 40 else 1)
 
-                if 
+                if cm == 'kmeans':
+
+                elif cm == 'dbscan':
 
                 # km = KMeans(n_clusters=num, n_jobs=-1,random_state=0).fit(train)
-                km = DBSCAN(n_jobs=-1).fit(train)
+                # km = DBSCAN(n_jobs=-1).fit(train)
 
-                cluster_labels = km.labels_
+                # cluster_labels = km.labels_
 
-                train['cluster'] = cluster_labels
+                # train['cluster'] = cluster_labels
 
-                all_fail = len(train[train['score'] == 1])
-                all_pass = len(train[train['score'] == 0])
-                all_total = len(train.index)
+                # all_fail = len(train[train['score'] == 1])
+                # all_pass = len(train[train['score'] == 0])
+                # all_total = len(train.index)
 
-                all_fpct = all_fail / all_total if all_total != 0 else 0
-                all_ppct = all_pass / all_total if all_total != 0 else 0
+                # all_fpct = all_fail / all_total if all_total != 0 else 0
+                # all_ppct = all_pass / all_total if all_total != 0 else 0
 
                 # print(f'{mod.upper()}-{atbt.upper()} -- No Clusters:  ', f'\tFail [{all_fail}]:  ', round(all_fpct, 2), f'Pass [{all_pass}]:  ', round(all_ppct, 2), '\n')
 
-                w_avg = 0
+                # w_avg = 0
 
-                for clst in pd.Series(cluster_labels).unique():
+                # for clst in pd.Series(cluster_labels).unique():
 
-                    clst_train = train[train['cluster'] == clst]
+                #     clst_train = train[train['cluster'] == clst]
                     
-                    fail_count = len(clst_train[clst_train['score'] == 1])
-                    pass_count = len(clst_train[clst_train['score'] == 0])
+                #     fail_count = len(clst_train[clst_train['score'] == 1])
+                #     pass_count = len(clst_train[clst_train['score'] == 0])
 
-                    total_count = len(clst_train.index)
+                #     total_count = len(clst_train.index)
 
-                    clst_fail_pct = fail_count / total_count if total_count != 0 else 0
-                    clst_pass_pct = pass_count / total_count if total_count != 0 else 0
+                #     clst_fail_pct = fail_count / total_count if total_count != 0 else 0
+                #     clst_pass_pct = pass_count / total_count if total_count != 0 else 0
 
                     # print(f'Cluster {clst} [{total_count}]:  ', f'\tFail [{fail_count}]:  ', round(clst_fail_pct, 2), f'\tPass [{pass_count}]:  ', round(clst_pass_pct, 2))
 
-                    max_pct = max(clst_fail_pct, clst_pass_pct)
+    #                 max_pct = max(clst_fail_pct, clst_pass_pct)
 
-                    w_avg += max_pct * (total_count / all_total)
+    #                 w_avg += max_pct * (total_count / all_total)
 
-                pass_color = '\033[92m'
-                fail_color = '\033[91m'
-                end_color = '\033[0m'
+    #             pass_color = '\033[92m'
+    #             fail_color = '\033[91m'
+    #             end_color = '\033[0m'
 
-                if np.sign(w_avg - max(all_fpct, all_ppct)) == -1.0:
-                    color = fail_color
-                else:
-                    color = pass_color
+    #             if np.sign(w_avg - max(all_fpct, all_ppct)) == -1.0:
+    #                 color = fail_color
+    #             else:
+    #                 color = pass_color
 
-                print(f'{num} ==> \t( {color}{np.sign(w_avg - max(all_fpct, all_ppct))}{end_color} ) \t[ {color}{round(w_avg - max(all_fpct, all_ppct), 8)}{end_color} ]')
+    #             print(f'{num} ==> \t( {color}{np.sign(w_avg - max(all_fpct, all_ppct))}{end_color} ) \t[ {color}{round(w_avg - max(all_fpct, all_ppct), 8)}{end_color} ]')
 
-            mod_end = time.time()
-            print()
+    #         mod_end = time.time()
+    #         print()
 
-    all_end = time.time()
+    # all_end = time.time()

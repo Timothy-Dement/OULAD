@@ -130,8 +130,6 @@ attributes = {'asmt': assessment_attributes,
               'asmt_stdnt_abd': assessment_attributes + student_attributes + activity_attributes_by_days,
               'asmt_stdnt_abi': assessment_attributes + student_attributes + activity_attributes_by_interval}
 
-samples = ['non-smote', 'smote']
-
 modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'zzz']
 
 classifiers = ['dt', 'knn', 'nb', 'rf', 'svm']
@@ -139,16 +137,15 @@ classifiers = ['dt', 'knn', 'nb', 'rf', 'svm']
 cluster_methods = ['kmeans', 'dbscan']
 
 attributes = {'asmt': assessment_attributes}
-samples = ['non-smote']
 modules = ['aaa']
 classifiers = ['dt']
 cluster_methods = ['kmeans']
 
 for clf in classifiers:
 
-    for smpl in samples:
+    for mod in modules:
 
-        for mod in modules:
+        for cm in cluster_methods:
 
             # Record start time for the module
             mod_start = time.time()
@@ -201,7 +198,7 @@ for clf in classifiers:
                     if mod_frame[column].max() == mod_frame[column].min():
                         mod_frame[column] = 0
                     else:
-                        mod_frame[column] = (mod_frame[column] - mod_frame[column].mean()) / (mod_frame[column].max() - mod_frame[column].std())
+                        mod_frame[column] = (mod_frame[column] - mod_frame[column].mean()) / mod_frame[column].std()
 
             for atbt in attributes:
 
@@ -224,31 +221,18 @@ for clf in classifiers:
                 # Retain data from all previous semesters as the training set
                 train = atbt_frame[atbt_frame['code_presentation'] != '2014J']
 
-                #
-                #    When do we do we do SMOTE in relation to clustering?
-                #
-                #
-                #
-
                 # Drop columns irrelevant to classification
                 test = test.drop(columns=['code_presentation'])
                 train = train.drop(columns=['code_presentation'])
 
                 # Separate predictive attributes from classification labels
                 X_train = train.drop(columns=['score'])
-                y_train = train['score']
+                y_train = train['score'].apply(lambda x: 0 if x >= 40 else 1)
 
                 X_test = test.drop(columns=['score'])
-                y_test = test['score']
+                y_test = test['score'].apply(lambda x: 0 if x >= 40 else 1)
 
-                # if smpl == 'smote':
-                #     X_train, y_train = SMOTE(random_state=0).fit_resample(X_train, y_train)
-
-                train['score'] = train['score'].apply(lambda x: 0 if x >= 40 else 1)
-
-                print(f'{smpl.upper()}\t{mod.upper()}\t{atbt.upper()}\n')
-
-                for 
+                if 
 
                 # km = KMeans(n_clusters=num, n_jobs=-1,random_state=0).fit(train)
                 km = DBSCAN(n_jobs=-1).fit(train)

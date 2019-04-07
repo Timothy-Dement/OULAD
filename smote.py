@@ -191,7 +191,7 @@ for clf in classifiers:
                     if mod_frame[column].max() == mod_frame[column].min():
                         mod_frame[column] = 0
                     else:
-                        mod_frame[column] = (mod_frame[column] - mod_frame[column].mean()) / (mod_frame[column].max() - mod_frame[column].std())
+                        mod_frame[column] = (mod_frame[column] - mod_frame[column].mean()) / mod_frame[column].std()
 
             for atbt in attributes:
 
@@ -241,7 +241,7 @@ for clf in classifiers:
                 elif clf == 'knn':
                     model = KNeighborsClassifier(n_jobs=-1)
                 elif clf == 'rf':
-                    model = RandomForestClassifier(n_jobs=-1, random_state='0')
+                    model = RandomForestClassifier(n_jobs=-1, random_state=0)
 
                 model.fit(X_train, y_train)
 
@@ -304,6 +304,6 @@ for clf in classifiers:
 
             mod_end = time.time()
 
-    all_end = time.time()
+all_end = time.time()
 
-    print(f'\n[{clf.upper()}] ==> TOTAL TIME: {round(all_end - all_start, 2)} sec\n')
+print(f'\n\t==> TOTAL TIME: {round(all_end - all_start, 2)} sec\n')

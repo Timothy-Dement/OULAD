@@ -114,7 +114,8 @@ activity_attributes_by_interval = ['due_vs_submission_date',
 
 samples = ['non-smote', 'smote']
 
-classifiers = ['dt', 'svm', 'nb', 'knn', 'rf']
+# classifiers = ['dt', 'svm', 'nb', 'knn', 'rf']
+classifiers = ['rf']
 
 attributes = {'asmt': assessment_attributes,
               'stdnt': student_attributes,
@@ -241,7 +242,7 @@ for clf in classifiers:
                 elif clf == 'knn':
                     model = KNeighborsClassifier(n_jobs=-1)
                 elif clf == 'rf':
-                    model = RandomForestClassifier(n_jobs=-1, random_state=0)
+                    model = RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=0)
 
                 model.fit(X_train, y_train)
 

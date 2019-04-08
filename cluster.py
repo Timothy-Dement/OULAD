@@ -137,8 +137,8 @@ classifiers = ['dt', 'knn', 'nb', 'rf', 'svm']
 cluster_methods = ['kmeans', 'dbscan']
 
 # attributes = {'asmt': assessment_attributes}
-# modules = ['aaa']
-# classifiers = ['dt']
+modules = ['aaa']
+classifiers = ['dt']
 cluster_methods = ['kmeans']
 
 for clf in classifiers:
@@ -234,8 +234,25 @@ for clf in classifiers:
                 X_train = train.drop(columns=['score'])
                 y_train = train['score']
 
-                X_train = X_train.drop_duplicates()
-                y_train = y_train.loc[X_train.index]
+                if len(train.drop(columns=['score'])) != len(train.drop(columns=['score']).drop_duplicates()):
+
+                    train_groups = X_train.groupby(by=list(X_train))
+
+                    X_train = X_train.drop_duplicates()
+
+                    mode_labels = {}
+
+                    for unique_row in train_groups.groups.keys():
+
+                        group_labels = y_train.loc[train_groups.groups[unique_row]]
+
+                        mode_labels[unique_row] = group_labels.value_counts().idxmax()
+
+                    y_train = y_train.loc[X_train.index]
+
+                    for index, row in X_train.iterrows():
+
+                        y_train[index] = mode_labels[tuple(row.tolist())]
 
                 X_test = test.drop(columns=['score'])
                 y_test = test['score']

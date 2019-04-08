@@ -137,9 +137,9 @@ classifiers = ['dt', 'knn', 'nb', 'rf', 'svm']
 cluster_methods = ['kmeans', 'dbscan']
 
 # attributes = {'asmt': assessment_attributes}
-modules = ['aaa']
-classifiers = ['dt']
-cluster_methods = ['kmeans']
+# modules = ['aaa']
+# classifiers = ['dt']
+# cluster_methods = ['kmeans']
 
 for clf in classifiers:
 
@@ -238,7 +238,7 @@ for clf in classifiers:
 
                     train_groups = X_train.groupby(by=list(X_train))
 
-                    X_train = X_train.drop_duplicates()
+                    X_train = X_train.drop_duplicates().copy(deep=True)
 
                     mode_labels = {}
 

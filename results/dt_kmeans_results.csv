@@ -1,0 +1,5 @@
+module,attributes,cluster,metric,score
+aaa,asmt,kmeans,accuracy,0.9661016949152542
+aaa,asmt,kmeans,fscore,0.0
+aaa,asmt,kmeans,precision,0.0
+aaa,asmt,kmeans,recall,0.0

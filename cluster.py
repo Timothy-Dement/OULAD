@@ -132,23 +132,14 @@ attributes = {'asmt': assessment_attributes,
 
 modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'zzz']
 
-# classifiers = ['dt', 'knn', 'nb', 'rf', 'svm']
-classifiers = ['rf', 'svm']
+classifiers = ['dt', 'knn', 'nb', 'rf', 'svm']
 
-cluster_methods = ['kmeans', 'dbscan']
-
-# attributes = {'asmt': assessment_attributes}
-# modules = ['aaa']
-# classifiers = ['dt']
 cluster_methods = ['kmeans']
 
 for clf in classifiers:
 
     with open(f'./results/{clf}_kmeans_results.csv', 'w') as file:
         file.write('module,attributes,cluster,metric,score\n')
-
-    # with open(f'./results/{clf}_dbscan_results.csv', 'w') as file:
-    #     file.write('module,attributes,cluster,metric,score\n')
 
     for cm in cluster_methods:
 

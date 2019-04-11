@@ -20,6 +20,9 @@ nb_smote = pd.read_csv('./results/nb_smote_results.csv')
 rf_smote = pd.read_csv('./results/rf_smote_results.csv')
 svm_smote = pd.read_csv('./results/svm_smote_results.csv')
 
+for df in [dt_base, knn_base, nb_base, rf_base, svm_base]:
+    df['sample'] = 'none'
+
 dt_df = dt_base.append(dt_smote)
 knn_df = knn_base.append(knn_smote)
 nb_df = nb_base.append(nb_smote)
@@ -76,7 +79,7 @@ for mod in ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'zzz']:
         sns.set(style='whitegrid')
         _, ax = plt.subplots(figsize=scale)
 
-        mod_plot = sns.barplot(ax=ax, x='id', y='score', hue='sample', hue_order=['non-smote', 'smote'], data=metric_df)
+        mod_plot = sns.barplot(ax=ax, x='id', y='score', hue='sample', hue_order=['none', 'smote'], data=metric_df)
 
         if mod == 'zzz':
             mod_plot.set_title(f"{metric} - All Modules Combined", fontsize=15)

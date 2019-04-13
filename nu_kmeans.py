@@ -143,8 +143,8 @@ if not os.path.exists('./nu_results'):
     os.mkdir('./nu_results')
 
 for mod in modules:
-    if os.path.exists(f'./nu_results/{mod}_base_results.csv'):
-        os.remove(f'./nu_results/{mod}_base_results.csv')
+    if os.path.exists(f'./nu_results/{mod}_kmeans_results.csv'):
+        os.remove(f'./nu_results/{mod}_kmeans_results.csv')
 
 for mod in modules:
 

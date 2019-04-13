@@ -253,7 +253,7 @@ for mod in modules:
             y_hat = model.predict(X_test)
 
             # Generate the confusion matrix for the predictions
-            tn, fp, fn, tp = confusion_matrix(y_hat, y_test).ravel()
+            tn, fp, fn, tp = confusion_matrix(y_true=y_test, y_pred=y_hat).ravel()
 
             # Calculate performance metrics from the confusion matrix
             accuracy = None

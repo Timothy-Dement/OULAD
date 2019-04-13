@@ -135,10 +135,6 @@ attributes = {'asmt': assessment_attributes,
 
 classifiers = ['dt', 'knn', 'nb', 'nn', 'rf', 'svm']
 
-# modules = ['aaa']
-# attributes = {'asmt': assessment_attributes}
-classifiers = ['dt']
-
 if not os.path.exists('./nu_results'):
     os.mkdir('./nu_results')
 
@@ -263,7 +259,7 @@ for mod in modules:
         # Initialize K-Means object and set number of clusters for edge cases        
         num_rows = len(X_train)
         
-        if num_rows < 8:
+        if num_rows <= 8:
             km = KMeans(n_clusters=(int(num_rows ** 0.5)), random_state=0, n_jobs=-1)
         else:
             km = KMeans(random_state=0, n_jobs=-1)
@@ -275,6 +271,10 @@ for mod in modules:
         cluster_labels = km.labels_
         X_train['cluster'] = cluster_labels
 
+        # Determine clusters for test data and add them to the dataframe
+        test_clusters = km.predict(X_test)
+        X_test['cluster'] = test_clusters
+
         for clf in classifiers:
 
             # Record start time for the classifier
@@ -283,7 +283,7 @@ for mod in modules:
             # Train a separate classifier on each cluster
             cluster_models = {}
 
-            # Loop through each cluster
+            # Loop through each cluster to train
             for cl in pd.Series(cluster_labels).unique():
 
                 # Subset the training data by cluster and drop the cluster attribute
@@ -309,7 +309,11 @@ for mod in modules:
                     if clf == 'dt':
                         model = DecisionTreeClassifier(random_state=0)
                     elif clf == 'knn':
-                        model = KNeighborsClassifier(n_jobs=-1)
+                        cl_num_rows = len(Xcl_train)        
+                        if cl_num_rows <= 5:
+                            model = KNeighborsClassifier(n_neighbors=(int(cl_num_rows ** 0.5)), n_jobs=-1)
+                        else:
+                            model = KNeighborsClassifier(n_jobs=-1)
                     elif clf == 'nb':
                         model = GaussianNB()
                     elif clf == 'nn':
@@ -323,13 +327,9 @@ for mod in modules:
                     model.fit(Xcl_train, ycl_train)
                     cluster_models[cl] = model
 
-            # Determine clusters for test data and add them to the dataframe
-            test_clusters = km.predict(X_test)
-            X_test['cluster'] = test_clusters
-            
             tn, fp, fn, tp = 0, 0, 0, 0
 
-            # Loop through each cluster
+            # Loop through each cluster to test
             for cl in pd.Series(test_clusters).unique():
 
                 # Subset the testing data by cluster and drop the cluster attribute

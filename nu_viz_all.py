@@ -13,7 +13,7 @@ modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg']
 if not os.path.exists('./nu_charts'):
     os.mkdir('./nu_charts')
 
-scale = (20, 5)
+scale = (25, 5)
 
 for mod in modules:
 
@@ -50,7 +50,7 @@ for mod in modules:
         sns.set(style='whitegrid')
         _, ax = plt.subplots(figsize=scale)
 
-        mod_plot = sns.barplot(ax=ax, x='id', y='score', hue='technique', hue_order=['none', 'kmeans', 'pca', 'smote'], data=met_df)
+        mod_plot = sns.barplot(ax=ax, x='id', y='score', hue='technique', hue_order=['base', 'kmeans', 'pca', 'smote'], data=met_df)
         mod_plot.set_title(f"{metric} - Module {mod.upper()}", fontsize=15)
 
         plt.xticks(rotation=90)

@@ -302,15 +302,15 @@ for mod in modules:
             print('\n\t( T {0} : {1} : {2} = {3:.2f} s / {4:.2f} m / {5:.2f} h )'.format(mod.upper(), atbt.upper(), clf.upper(), clf_s, clf_m, clf_h))
 
             # Write results to appropriate file
-            if not os.path.exists(f'./nu_results/{mod}_base_results.csv'):
-                with open(f'./nu_results/{mod}_base_results.csv', 'w') as file:
-                    file.write(f'module,attributes,classifier,technique,metric,score\n')
+            # if not os.path.exists(f'./nu_results/{mod}_base_results.csv'):
+            #     with open(f'./nu_results/{mod}_base_results.csv', 'w') as file:
+            #         file.write(f'module,attributes,classifier,technique,metric,score\n')
             
-            with open(f'./nu_results/{mod}_base_results.csv', 'a') as file:
-                file.write(f'{mod},{atbt},{clf},base,accuracy,{accuracy}\n')
-                file.write(f'{mod},{atbt},{clf},base,fscore,{fscore}\n')
-                file.write(f'{mod},{atbt},{clf},base,precision,{precision}\n')
-                file.write(f'{mod},{atbt},{clf},base,recall,{recall}\n')
+            # with open(f'./nu_results/{mod}_base_results.csv', 'a') as file:
+            #     file.write(f'{mod},{atbt},{clf},base,accuracy,{accuracy}\n')
+            #     file.write(f'{mod},{atbt},{clf},base,fscore,{fscore}\n')
+            #     file.write(f'{mod},{atbt},{clf},base,precision,{precision}\n')
+            #     file.write(f'{mod},{atbt},{clf},base,recall,{recall}\n')
         
         # Record end time and report runtime for the attribute subset
         atbt_end = time.time()

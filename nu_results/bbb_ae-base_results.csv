@@ -1,0 +1,5 @@
+module,attributes,classifier,technique,metric,score
+bbb,asmt,ae,base,accuracy,0.8853485838779956
+bbb,asmt,ae,base,fscore,0.0
+bbb,asmt,ae,base,precision,0.0
+bbb,asmt,ae,base,recall,0.0

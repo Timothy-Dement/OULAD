@@ -204,8 +204,6 @@ for mod in modules:
     
     for atbt in attributes:
 
-        num_enc_feats = int(round(len(attributes[atbt]) ** 0.5))
-
         # Record start time for the attribute subset
         atbt_start = time.time()
 
@@ -241,6 +239,8 @@ for mod in modules:
 
             ##################################################
             ##################################################
+
+            num_enc_feats = int(round(X_train.shape[0] ** 0.5))
 
             input_dim = Input(shape = (X_train.shape[1],))
             

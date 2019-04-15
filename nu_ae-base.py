@@ -204,6 +204,8 @@ for mod in modules:
     
     for atbt in attributes:
 
+        num_enc_feats = int(round(len(attributes[atbt]) ** 0.5))
+
         # Record start time for the attribute subset
         atbt_start = time.time()
 
@@ -242,12 +244,12 @@ for mod in modules:
 
             input_dim = Input(shape = (X_train.shape[1],))
             
-            encoded1 = Dense(200, activation = 'relu')(input_dim)
-            encoded2 = Dense(100, activation = 'relu')(encoded1)
-            encoded3 = Dense(50, activation = 'relu')(encoded2)
+            encoded1 = Dense(128, activation = 'relu')(input_dim)
+            encoded2 = Dense(32, activation = 'relu')(encoded1)
+            encoded3 = Dense(num_enc_feats, activation = 'relu')(encoded2)
 
-            decoded1 = Dense(100, activation = 'relu')(encoded3)
-            decoded2 = Dense(200, activation = 'relu')(decoded1)
+            decoded1 = Dense(32, activation = 'relu')(encoded3)
+            decoded2 = Dense(128, activation = 'relu')(decoded1)
             decoded3 = Dense(X_train.shape[1], activation = 'relu')(decoded2)
             
             autoencoder = Model(inputs = input_dim, outputs = decoded3)
@@ -257,7 +259,7 @@ for mod in modules:
             autoencoder.fit(X_train, X_train, epochs = 10, batch_size = 10, shuffle = False, validation_data = (X_test, X_test))
             
             encoder = Model(inputs = input_dim, outputs = encoded3)
-            encoded_input = Input(shape = (50, ))
+            encoded_input = Input(shape = (num_enc_feats, ))
             
             encoded_train = pd.DataFrame(encoder.predict(X_train))
             encoded_train = encoded_train.add_prefix('feature_')
@@ -266,7 +268,7 @@ for mod in modules:
             encoded_test = encoded_test.add_prefix('feature_')
             
             model = Sequential()
-            model.add(Dense(100, input_dim=50, kernel_initializer='normal', activation='relu')) #50 is encoding_dim
+            model.add(Dense(100, input_dim=num_enc_feats, kernel_initializer='normal', activation='relu'))
             model.add(Dense(75, kernel_initializer='normal', activation='relu'))
             model.add(Dense(100, kernel_initializer='normal', activation='relu'))
             model.add(Dense(75, kernel_initializer='normal', activation='relu'))

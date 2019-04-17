@@ -126,7 +126,7 @@ activity_attributes_by_interval = ['due_vs_submission_date',
                                    'htmlactivity_clicks_by_interval',
                                    'htmlactivity_clicks_by_interval_change']
 
-modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg']
+modules = ['aaa', 'bbb', 'ccc']#, 'ddd', 'eee', 'fff', 'ggg']
 
 attributes = {'asmt': assessment_attributes,
               'stdnt': student_attributes,
@@ -259,7 +259,7 @@ for mod in modules:
             
             model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
             
-            model.fit(X_train, y_train, epochs=10, batch_size=10)
+            model.fit(X_train, y_train, epochs=10, batch_size=10, verbose=0)
             
             y_hat = model.predict(X_test)
             y_hat = [round(x[0]) for x in y_hat]

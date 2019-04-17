@@ -1,0 +1,9 @@
+module,attributes,classifier,technique,metric,score
+bbb,asmt,ae,kmeans,accuracy,0.8853485838779956
+bbb,asmt,ae,kmeans,fscore,0.0
+bbb,asmt,ae,kmeans,precision,0.0
+bbb,asmt,ae,kmeans,recall,0.0
+bbb,stdnt,ae,kmeans,accuracy,0.8853485838779956
+bbb,stdnt,ae,kmeans,fscore,0.0
+bbb,stdnt,ae,kmeans,precision,0.0
+bbb,stdnt,ae,kmeans,recall,0.0

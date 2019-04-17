@@ -7,13 +7,16 @@ from matplotlib import pyplot as plt
 from matplotlib import rcParams as rcp
 
 rcp.update({'figure.autolayout': True})
+rcp["figure.figsize"] = (10, 10)
 
 modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg']
 
 if not os.path.exists('./nu_charts'):
     os.mkdir('./nu_charts')
 
-scale = (10, 10)
+# scale = (10, 10)
+
+# font_scale = 2
 
 for mod in modules:
 
@@ -58,8 +61,9 @@ for mod in modules:
 
         counts = pd.DataFrame(columns=['bucket', 'count'], data=data)
 
-        sns.set(style='darkgrid')
-        _, ax = plt.subplots(figsize=scale)
+        sns.set(style='darkgrid')#, font_scale=font_scale)
+
+        # _, ax = plt.subplots(figsize=scale)
 
         if metric == 'Accuracy':
             color = '#4682b4'
@@ -70,11 +74,17 @@ for mod in modules:
         elif metric == 'Recall':
             color = '#b22222'
 
-        mod_plot = sns.barplot(ax=ax, x='bucket', y='count', color=color, data=counts)
+        mod_plot = sns.barplot(x='bucket', y='count', color=color, data=counts)
         mod_plot.set_title(f"{mod.upper()} : {metric}", fontsize=50)
+        mod_plot.tick_params(labelsize=25)
+        mod_plot.set(ylim=(0,300))
 
         plt.ylabel('')
         plt.xlabel('')
+
+        plt.xticks(rotation=90)
+
+        # plt.show()
 
         mod_plot.figure.savefig(f'./nu_charts/dist_{mod}_{metric.lower()}.png')
 

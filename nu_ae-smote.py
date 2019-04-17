@@ -128,6 +128,8 @@ activity_attributes_by_interval = ['due_vs_submission_date',
 
 modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg']
 
+modules = ['fff', 'ggg']
+
 attributes = {'asmt': assessment_attributes,
               'stdnt': student_attributes,
               'abd': activity_attributes_by_days,

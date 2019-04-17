@@ -124,7 +124,7 @@ activity_attributes_by_interval = ['due_vs_submission_date',
                                    'htmlactivity_clicks_by_interval',
                                    'htmlactivity_clicks_by_interval_change']
 
-modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg']
+modules = ['aaa', 'bbb', 'ccc']#, 'ddd', 'eee', 'fff', 'ggg']
 
 attributes = {'asmt': assessment_attributes,
               'stdnt': student_attributes,

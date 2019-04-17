@@ -1,7 +1,15 @@
+import random as rn
+rn.seed(0)
+
+import numpy as np
+np.random.seed(0)
+
+import tensorflow as tf
+tf.set_random_seed(0)
+
 import os
 import time
 
-import numpy as np
 import pandas as pd
 
 from sklearn.metrics import confusion_matrix
@@ -12,6 +20,9 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
+
+from tensorflow.keras.layers import Dense, Input
+from tensorflow.keras.models import Model, Sequential
 
 # Record the overall start time
 all_start = time.time()
@@ -137,8 +148,8 @@ if not os.path.exists('./nu_results'):
     os.mkdir('./nu_results')
 
 for mod in modules:
-    if os.path.exists(f'./nu_results/{mod}_base_results.csv'):
-        os.remove(f'./nu_results/{mod}_base_results.csv')
+    if os.path.exists(f'./nu_results/{mod}_sk+ae_results.csv'):
+        os.remove(f'./nu_results/{mod}_sk+ae_results.csv')
 
 for mod in modules:
 
@@ -225,6 +236,40 @@ for mod in modules:
         y_train = train['score'].apply(lambda x: 0 if x >= 40 else 1)
         y_test = test['score'].apply(lambda x: 0 if x >= 40 else 1)
 
+        ##################################################
+        ##################################################
+
+        num_enc_feats = int(round(X_train.shape[0] ** 0.5))
+
+        input_dim = Input(shape = (X_train.shape[1],))
+        
+        encoded1 = Dense(128, activation = 'relu')(input_dim)
+        encoded2 = Dense(32, activation = 'relu')(encoded1)
+        encoded3 = Dense(num_enc_feats, activation = 'relu')(encoded2)
+
+        decoded1 = Dense(32, activation = 'relu')(encoded3)
+        decoded2 = Dense(128, activation = 'relu')(decoded1)
+        decoded3 = Dense(X_train.shape[1], activation = 'relu')(decoded2)
+        
+        autoencoder = Model(inputs = input_dim, outputs = decoded3)
+
+        autoencoder.compile(optimizer = 'adam', loss = 'binary_crossentropy',  metrics=['accuracy'])
+
+        autoencoder.fit(X_train, X_train, epochs = 10, batch_size = 10, shuffle = False, validation_data = (X_test, X_test))
+        
+        encoder = Model(inputs = input_dim, outputs = encoded3)
+        encoded_input = Input(shape = (num_enc_feats, ))
+        
+        encoded_train = pd.DataFrame(encoder.predict(X_train))
+        encoded_train = encoded_train.add_prefix('feature_')
+
+        encoded_test = pd.DataFrame(encoder.predict(X_test))
+        encoded_test = encoded_test.add_prefix('feature_')
+        
+        ##################################################
+        ##################################################
+
+
         for clf in classifiers:
 
             # Record start time for the classifier
@@ -246,11 +291,14 @@ for mod in modules:
             elif clf == 'svm':
                 model = SVC(gamma='auto', random_state=0)
 
-            # Fit the classifier to the training data
-            model.fit(X_train, y_train)
+            ##################################################
+            ##################################################
 
-            # Predict classes for the test set
-            y_hat = model.predict(X_test)
+            model.fit(encoded_train, y_train)
+            y_hat = model.predict(encoded_test)
+
+            ##################################################
+            ##################################################
 
             # Generate the confusion matrix for the predictions
             tn, fp, fn, tp = confusion_matrix(y_true=y_test, y_pred=y_hat).ravel()
@@ -286,7 +334,7 @@ for mod in modules:
                 fscore = (2 * tp) / ((2 * tp) + tn + fp + fn)
 
             # Report progress and results
-            print('\n[ {0} : {1} : {2} : BASE ]'.format(mod.upper(), atbt.upper(), clf.upper()))
+            print('\n[ {0} : {1} : {2} : AE ]'.format(mod.upper(), atbt.upper(), clf.upper()))
             print('+----------------------+')
             print('| ACC:    \t{0:.4f} |'.format(accuracy))
             print('| FSCORE: \t{0:.4f} |'.format(fscore))
@@ -302,15 +350,15 @@ for mod in modules:
             print('\n\t( T {0} : {1} : {2} = {3:.2f} s / {4:.2f} m / {5:.2f} h )'.format(mod.upper(), atbt.upper(), clf.upper(), clf_s, clf_m, clf_h))
 
             # Write results to appropriate file
-            if not os.path.exists(f'./nu_results/{mod}_base_results.csv'):
-                with open(f'./nu_results/{mod}_base_results.csv', 'w') as file:
+            if not os.path.exists(f'./nu_results/{mod}_sk+ae_results.csv'):
+                with open(f'./nu_results/{mod}_sk+ae_results.csv', 'w') as file:
                     file.write(f'module,attributes,classifier,technique,metric,score\n')
             
-            with open(f'./nu_results/{mod}_base_results.csv', 'a') as file:
-                file.write(f'{mod},{atbt},{clf},base,accuracy,{accuracy}\n')
-                file.write(f'{mod},{atbt},{clf},base,fscore,{fscore}\n')
-                file.write(f'{mod},{atbt},{clf},base,precision,{precision}\n')
-                file.write(f'{mod},{atbt},{clf},base,recall,{recall}\n')
+            with open(f'./nu_results/{mod}_sk+ae_results.csv', 'a') as file:
+                file.write(f'{mod},{atbt},{clf},ae,accuracy,{accuracy}\n')
+                file.write(f'{mod},{atbt},{clf},ae,fscore,{fscore}\n')
+                file.write(f'{mod},{atbt},{clf},ae,precision,{precision}\n')
+                file.write(f'{mod},{atbt},{clf},ae,recall,{recall}\n')
         
         # Record end time and report runtime for the attribute subset
         atbt_end = time.time()

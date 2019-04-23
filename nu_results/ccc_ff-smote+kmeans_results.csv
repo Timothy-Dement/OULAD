@@ -1,0 +1,5 @@
+module,attributes,classifier,technique,metric,score
+ccc,asmt,ff,smote+kmeans,accuracy,0.9169045353631462
+ccc,asmt,ff,smote+kmeans,fscore,0.0
+ccc,asmt,ff,smote+kmeans,precision,0.0
+ccc,asmt,ff,smote+kmeans,recall,0.0

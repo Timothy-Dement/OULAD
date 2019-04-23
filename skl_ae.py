@@ -239,7 +239,7 @@ for mod in modules:
         ##################################################
         ##################################################
 
-        num_enc_feats = int(round(X_train.shape[0] ** 0.5))
+        num_enc_feats = int(round(X_train.shape[1] ** 0.5))
 
         input_dim = Input(shape = (X_train.shape[1],))
         

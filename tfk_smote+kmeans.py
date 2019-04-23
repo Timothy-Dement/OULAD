@@ -1,8 +1,20 @@
+import random as rn
+rn.seed(0)
+
+import numpy as np
+np.random.seed(0)
+
+import tensorflow as tf
+tf.set_random_seed(0)
+
 import os
 import time
 
-import numpy as np
 import pandas as pd
+
+from imblearn.over_sampling import SMOTE
+
+from sklearn.cluster import KMeans
 
 from sklearn.metrics import confusion_matrix
 
@@ -13,8 +25,8 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
-from tensorflow.keras.layers import Dense, Input
-from tensorflow.keras.models import Model, Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import Sequential
 
 # os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -124,7 +136,8 @@ activity_attributes_by_interval = ['due_vs_submission_date',
                                    'htmlactivity_clicks_by_interval',
                                    'htmlactivity_clicks_by_interval_change']
 
-modules = ['aaa', 'bbb', 'ccc']#, 'ddd', 'eee', 'fff', 'ggg']
+modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg']
+modules = ['fff', 'bbb', 'ddd', 'ccc', 'ggg', 'eee', 'aaa']
 
 attributes = {'asmt': assessment_attributes,
               'stdnt': student_attributes,
@@ -138,14 +151,14 @@ attributes = {'asmt': assessment_attributes,
               'asmt_stdnt_abd': assessment_attributes + student_attributes + activity_attributes_by_days,
               'asmt_stdnt_abi': assessment_attributes + student_attributes + activity_attributes_by_interval}
 
-classifiers = ['ae']
+classifiers = ['ff']
 
 if not os.path.exists('./nu_results'):
     os.mkdir('./nu_results')
 
 for mod in modules:
-    if os.path.exists(f'./nu_results/{mod}_ae-base_results.csv'):
-        os.remove(f'./nu_results/{mod}_ae-base_results.csv')
+    if os.path.exists(f'./nu_results/{mod}_ff-smote+kmeans_results.csv'):
+        os.remove(f'./nu_results/{mod}_ff-smote+kmeans_results.csv')
 
 for mod in modules:
 
@@ -232,141 +245,238 @@ for mod in modules:
         y_train = train['score'].apply(lambda x: 0 if x >= 40 else 1)
         y_test = test['score'].apply(lambda x: 0 if x >= 40 else 1)
 
+        columns = list(X_train)
+
+        # Apply SMOTE to the training data
+        X_train, y_train = SMOTE(random_state=0).fit_resample(X_train, y_train)
+        X_train = pd.DataFrame(data=X_train, columns=columns)
+        y_train = pd.Series(y_train)
+
+        # Handle duplicate rows by reducing to majority class
+        if len(X_train) != len(X_train.drop_duplicates()):
+
+            # Group training data by matching all attributes (duplicates)
+            train_groups = X_train.groupby(by=list(X_train))
+
+            # Drop duplicate rows in the training data
+            X_train = X_train.drop_duplicates().copy(deep=True)
+
+            mode_labels = {}
+
+            # Loop through each unique (non-duplicate) row
+            for unique_row in train_groups.groups.keys():
+
+                # Retrieve all labels for a given row and its duplicates
+                group_labels = y_train.loc[train_groups.groups[unique_row]]
+
+                # Record the majority class for each unique row
+                mode_labels[unique_row] = group_labels.value_counts().idxmax()
+                
+            # Reduce training labels to match training data indices
+            y_train = y_train.loc[X_train.index]
+
+            # Set the appropriate training labels to the majority class
+            for index, row in X_train.iterrows():
+                y_train[index] = mode_labels[tuple(row.tolist())]
+
+        km = None
+
+        # Initialize K-Means object and set number of clusters for edge cases        
+        num_rows = len(X_train)
+        
+        if num_rows <= 8:
+            km = KMeans(n_clusters=(int(num_rows ** 0.5)), random_state=0, n_jobs=-1)
+        else:
+            km = KMeans(random_state=0, n_jobs=-1)
+
+        # Fit the K-Means object to the training data
+        km.fit(X_train)
+
+        # Retrieve the cluster labels and add them to the dataframe
+        cluster_labels = km.labels_
+        X_train['cluster'] = cluster_labels
+
+        # Determine clusters for test data and add them to the dataframe
+        test_clusters = km.predict(X_test)
+        X_test['cluster'] = test_clusters
+
         for clf in classifiers:
 
             # Record start time for the classifier
             clf_start = time.time()
 
-            ##################################################
-            ##################################################
+            # Train a separate classifier on each cluster
+            cluster_models = {}
 
-            print(X_train.shape)
+            # Loop through each cluster to train
+            for cl in pd.Series(cluster_labels).unique():
 
-            num_enc_feats = int(round(X_train.shape[1] ** 0.5))
+                # Subset the training data by cluster and drop the cluster attribute
+                Xcl_train = X_train[X_train['cluster'] == cl]
+                Xcl_train = Xcl_train.drop(columns=['cluster'])
 
-            print(num_enc_feats)
+                # Retrieve the matching training labels by indices
+                cl_indices = Xcl_train.index
+                ycl_train = y_train.loc[cl_indices]
 
-#             input_dim = Input(shape = (X_train.shape[1],))
+                # Check for homogenous clusters and predict accordingly
+                if len(pd.Series(ycl_train).unique()) == 1:
+                    
+                    label = ycl_train.unique()[0]
+                    cluster_models[cl] = label
+                
+                # If non-homogenous, train a classifer on the cluster
+                else:
+
+                    ##################################################
+                    ##################################################
+
+                    model = Sequential()
+
+                    model.add(Dense(100, input_dim=Xcl_train.shape[1], kernel_initializer='normal', activation='relu'))
+                    model.add(Dense(75, kernel_initializer='normal', activation='relu'))
+                    model.add(Dense(100, kernel_initializer='normal', activation='relu'))
+                    model.add(Dense(75, kernel_initializer='normal', activation='relu'))
+                    model.add(Dense(100, kernel_initializer='normal', activation='relu'))      
+                    model.add(Dense(1, kernel_initializer='normal', activation='sigmoid'))
+                    
+                    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+                    
+                    model.fit(Xcl_train, ycl_train, epochs=10, batch_size=10, verbose=0)
+                    
+                    ##################################################
+                    ##################################################
+
+                    cluster_models[cl] = model
+
+            tn, fp, fn, tp = 0, 0, 0, 0
+
+            # Loop through each cluster to test
+            for cl in pd.Series(test_clusters).unique():
+
+                # Subset the testing data by cluster and drop the cluster attribute
+                Xcl_test = X_test[X_test['cluster'] == cl]
+                Xcl_test = Xcl_test.drop(columns=['cluster'])
+
+                # Retrieve the matching testing labels by indices
+                cl_indices = Xcl_test.index
+                ycl_test = y_test.loc[cl_indices]
+
+                # Retrieve the model for the cluster
+                cl_mod = cluster_models[cl]
+
+                # Check for homogenous clusters and make predictions accordingly
+                ycl_hat = None
+
+                if cl_mod == 0:
+                    ycl_hat = [0] * len(ycl_test)
+                elif cl_mod == 1:
+                    ycl_hat = [1] * len(ycl_test)
+                else:
+
+                    ##################################################
+                    ##################################################
+
+                    ycl_hat = cluster_models[cl].predict(Xcl_test)
+                    ycl_hat = [round(x[0]) for x in ycl_hat]
+
+                    ##################################################
+                    ##################################################
+
+                cl_tn, cl_fp, cl_fn, cl_tp = 0, 0, 0, 0
+
+                # Enumerate the TN, FP, FN, and TP counts
+                for ix, val in enumerate(ycl_test):
+                    pred = ycl_hat[ix]
+                    if val == 0 and pred == 0:
+                        cl_tn += 1
+                    elif val == 0 and pred == 1:
+                        cl_fp += 1
+                    elif val == 1 and pred == 0:
+                        cl_fn += 1
+                    elif val == 1 and pred == 1:
+                        cl_tp += 1
+
+                # Aggregate confusion matrix elements across clusters
+                tn += cl_tn
+                fp += cl_fp
+                fn += cl_fn
+                tp += cl_tp
+
+            # Calculate performance metrics from the confusion matrix
+            accuracy = None
+            precision = None
+            recall = None
+            fscore = None
+
+            # Accuracy (account for divide-by-zero)
+            if (tp + tn + fp + fn) == 0:
+                accuracy = 0.0
+            else:
+                accuracy = (tp + tn) / (tp + tn + fp + fn)
+
+            # Precision (account for divide-by-zero)
+            if (tp + fp) == 0:
+                precision = 0.0
+            else:
+                precision = (tp) / (tp + fp)
+
+            # Recall (account for divide-by-zero)
+            if (tp + fn) == 0:
+                recall = 0.0
+            else:
+                recall = (tp) / (tp + fn)
+
+            # F-Score (account for divide-by-zero)
+            if ((2 * tp) + tn + fp + fn) == 0:
+                fscore = 0.0
+            else:
+                fscore = (2 * tp) / ((2 * tp) + tn + fp + fn)
+
+            # Report progress and results
+            print('\n[ {0} : {1} : {2} : SMOTE+KMEANS ]'.format(mod.upper(), atbt.upper(), clf.upper()))
+            print('+----------------------+')
+            print('| ACC:    \t{0:.4f} |'.format(accuracy))
+            print('| FSCORE: \t{0:.4f} |'.format(fscore))
+            print('| PREC:   \t{0:.4f} |'.format(precision))
+            print('| REC:    \t{0:.4f} |'.format(recall))
+            print('+----------------------+')
+
+            # Record end time and report runtime for the classifier
+            clf_end = time.time()
+            clf_s = clf_end - clf_start
+            clf_m = clf_s / 60
+            clf_h = clf_m / 60
+            print('\n\t( T {0} : {1} : {2} = {3:.2f} s / {4:.2f} m / {5:.2f} h )'.format(mod.upper(), atbt.upper(), clf.upper(), clf_s, clf_m, clf_h))
+
+            # Write results to appropriate file
+            if not os.path.exists(f'./nu_results/{mod}_ff-smote+kmeans_results.csv'):
+                with open(f'./nu_results/{mod}_ff-smote+kmeans_results.csv', 'w') as file:
+                    file.write(f'module,attributes,classifier,technique,metric,score\n')
             
-#             encoded1 = Dense(128, activation = 'relu')(input_dim)
-#             encoded2 = Dense(32, activation = 'relu')(encoded1)
-#             encoded3 = Dense(num_enc_feats, activation = 'relu')(encoded2)
-
-#             decoded1 = Dense(32, activation = 'relu')(encoded3)
-#             decoded2 = Dense(128, activation = 'relu')(decoded1)
-#             decoded3 = Dense(X_train.shape[1], activation = 'relu')(decoded2)
-            
-#             autoencoder = Model(inputs = input_dim, outputs = decoded3)
-
-#             autoencoder.compile(optimizer = 'adam', loss = 'binary_crossentropy',  metrics=['accuracy'])
-
-#             autoencoder.fit(X_train, X_train, epochs = 10, batch_size = 10, shuffle = False, validation_data = (X_test, X_test))
-            
-#             encoder = Model(inputs = input_dim, outputs = encoded3)
-#             encoded_input = Input(shape = (num_enc_feats, ))
-            
-#             encoded_train = pd.DataFrame(encoder.predict(X_train))
-#             encoded_train = encoded_train.add_prefix('feature_')
-
-#             encoded_test = pd.DataFrame(encoder.predict(X_test))
-#             encoded_test = encoded_test.add_prefix('feature_')
-            
-#             model = Sequential()
-#             model.add(Dense(100, input_dim=num_enc_feats, kernel_initializer='normal', activation='relu'))
-#             model.add(Dense(75, kernel_initializer='normal', activation='relu'))
-#             model.add(Dense(100, kernel_initializer='normal', activation='relu'))
-#             model.add(Dense(75, kernel_initializer='normal', activation='relu'))
-#             model.add(Dense(100, kernel_initializer='normal', activation='relu'))
-            
-#             model.add(Dense(1, kernel_initializer='normal', activation='sigmoid'))
-            
-#             model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-            
-#             model.fit(encoded_train, y_train, epochs=10, batch_size=10)
-
-#             y_hat = model.predict(encoded_test)
-#             y_hat = [round(x[0]) for x in y_hat]
-
-#             ##################################################
-#             ##################################################
-
-#             # Generate the confusion matrix for the predictions
-#             tn, fp, fn, tp = confusion_matrix(y_true=y_test, y_pred=y_hat).ravel()
-
-#             # Calculate performance metrics from the confusion matrix
-#             accuracy = None
-#             precision = None
-#             recall = None
-#             fscore = None
-
-#             # Accuracy (account for divide-by-zero)
-#             if (tp + tn + fp + fn) == 0:
-#                 accuracy = 0.0
-#             else:
-#                 accuracy = (tp + tn) / (tp + tn + fp + fn)
-
-#             # Precision (account for divide-by-zero)
-#             if (tp + fp) == 0:
-#                 precision = 0.0
-#             else:
-#                 precision = (tp) / (tp + fp)
-
-#             # Recall (account for divide-by-zero)
-#             if (tp + fn) == 0:
-#                 recall = 0.0
-#             else:
-#                 recall = (tp) / (tp + fn)
-
-#             # F-Score (account for divide-by-zero)
-#             if ((2 * tp) + tn + fp + fn) == 0:
-#                 fscore = 0.0
-#             else:
-#                 fscore = (2 * tp) / ((2 * tp) + tn + fp + fn)
-
-#             # Report progress and results
-#             print('\n[ {0} : {1} : {2} : BASE ]'.format(mod.upper(), atbt.upper(), clf.upper()))
-#             print('+----------------------+')
-#             print('| ACC:    \t{0:.4f} |'.format(accuracy))
-#             print('| FSCORE: \t{0:.4f} |'.format(fscore))
-#             print('| PREC:   \t{0:.4f} |'.format(precision))
-#             print('| REC:    \t{0:.4f} |'.format(recall))
-#             print('+----------------------+')
-
-#             # Record end time and report runtime for the classifier
-#             clf_end = time.time()
-#             clf_s = clf_end - clf_start
-#             clf_m = clf_s / 60
-#             clf_h = clf_m / 60
-#             print('\n\t( T {0} : {1} : {2} = {3:.2f} s / {4:.2f} m / {5:.2f} h )'.format(mod.upper(), atbt.upper(), clf.upper(), clf_s, clf_m, clf_h))
-
-#             # Write results to appropriate file
-#             if not os.path.exists(f'./nu_results/{mod}_ae-base_results.csv'):
-#                 with open(f'./nu_results/{mod}_ae-base_results.csv', 'w') as file:
-#                     file.write(f'module,attributes,classifier,technique,metric,score\n')
-            
-#             with open(f'./nu_results/{mod}_ae-base_results.csv', 'a') as file:
-#                 file.write(f'{mod},{atbt},{clf},base,accuracy,{accuracy}\n')
-#                 file.write(f'{mod},{atbt},{clf},base,fscore,{fscore}\n')
-#                 file.write(f'{mod},{atbt},{clf},base,precision,{precision}\n')
-#                 file.write(f'{mod},{atbt},{clf},base,recall,{recall}\n')
+            with open(f'./nu_results/{mod}_ff-smote+kmeans_results.csv', 'a') as file:
+                file.write(f'{mod},{atbt},{clf},smote+kmeans,accuracy,{accuracy}\n')
+                file.write(f'{mod},{atbt},{clf},smote+kmeans,fscore,{fscore}\n')
+                file.write(f'{mod},{atbt},{clf},smote+kmeans,precision,{precision}\n')
+                file.write(f'{mod},{atbt},{clf},smote+kmeans,recall,{recall}\n')
         
-#         # Record end time and report runtime for the attribute subset
-#         atbt_end = time.time()
-#         atbt_s = atbt_end - atbt_start
-#         atbt_m = atbt_s / 60
-#         atbt_h = atbt_m / 60
-#         print('\n\t( T {0} : {1} = {2:.2f} s / {3:.2f} m / {4:.2f} h )'.format(mod.upper(), atbt.upper(), atbt_s, atbt_m, atbt_h))
+        # Record end time and report runtime for the attribute subset
+        atbt_end = time.time()
+        atbt_s = atbt_end - atbt_start
+        atbt_m = atbt_s / 60
+        atbt_h = atbt_m / 60
+        print('\n\t( T {0} : {1} = {2:.2f} s / {3:.2f} m / {4:.2f} h )'.format(mod.upper(), atbt.upper(), atbt_s, atbt_m, atbt_h))
 
-#     # Record end time and report runtime for for the module
-#     mod_end = time.time()
-#     mod_s = mod_end - mod_start
-#     mod_m = mod_s / 60
-#     mod_h = mod_m / 60
-#     print('\n\t( T {0} = {1:.2f} s / {2:.2f} m / {3:.2f} h )'.format(mod.upper(), mod_s, mod_m, mod_h))
+    # Record end time and report runtime for for the module
+    mod_end = time.time()
+    mod_s = mod_end - mod_start
+    mod_m = mod_s / 60
+    mod_h = mod_m / 60
+    print('\n\t( T {0} = {1:.2f} s / {2:.2f} m / {3:.2f} h )'.format(mod.upper(), mod_s, mod_m, mod_h))
 
-# # Record overall end time and report overall runtime
-# all_end = time.time()
-# all_s = all_end - all_start
-# all_m = all_s / 60
-# all_h = all_m / 60
-# print('\n\t( T = {0:.2f} s / {1:.2f} m / {2:.2f} h )'.format(all_s, all_m, all_h))
+# Record overall end time and report overall runtime
+all_end = time.time()
+all_s = all_end - all_start
+all_m = all_s / 60
+all_h = all_m / 60
+print('\n\t( T = {0:.2f} s / {1:.2f} m / {2:.2f} h )'.format(all_s, all_m, all_h))

@@ -1,8 +1,18 @@
+import random as rn
+rn.seed(0)
+
+import numpy as np
+np.random.seed(0)
+
+import tensorflow as tf
+tf.set_random_seed(0)
+
 import os
 import time
 
-import numpy as np
 import pandas as pd
+
+from imblearn.over_sampling import SMOTE
 
 from sklearn.decomposition import PCA
 
@@ -15,8 +25,8 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
-from tensorflow.keras.layers import Dense, Input
-from tensorflow.keras.models import Model, Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import Sequential
 
 # os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -126,7 +136,8 @@ activity_attributes_by_interval = ['due_vs_submission_date',
                                    'htmlactivity_clicks_by_interval',
                                    'htmlactivity_clicks_by_interval_change']
 
-modules = ['aaa', 'bbb', 'ccc']#, 'ddd', 'eee', 'fff', 'ggg']
+modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg']
+modules = ['aaa', 'bbb']
 
 attributes = {'asmt': assessment_attributes,
               'stdnt': student_attributes,
@@ -140,14 +151,14 @@ attributes = {'asmt': assessment_attributes,
               'asmt_stdnt_abd': assessment_attributes + student_attributes + activity_attributes_by_days,
               'asmt_stdnt_abi': assessment_attributes + student_attributes + activity_attributes_by_interval}
 
-classifiers = ['ae']
+classifiers = ['ff']
 
 if not os.path.exists('./nu_results'):
     os.mkdir('./nu_results')
 
 for mod in modules:
-    if os.path.exists(f'./nu_results/{mod}_ae-pca_results.csv'):
-        os.remove(f'./nu_results/{mod}_ae-pca_results.csv')
+    if os.path.exists(f'./nu_results/{mod}_ff-smote+pca_results.csv'):
+        os.remove(f'./nu_results/{mod}_ff-smote+pca_results.csv')
 
 for mod in modules:
 
@@ -230,15 +241,18 @@ for mod in modules:
         X_train = train.drop(columns=['score'])
         X_test = test.drop(columns=['score'])
 
+        # Cast score attribute as binary 'pass' (0) / 'fail' (1)
+        y_train = train['score'].apply(lambda x: 0 if x >= 40 else 1)
+        y_test = test['score'].apply(lambda x: 0 if x >= 40 else 1)
+
+        # Apply SMOTE to the training data
+        X_train, y_train = SMOTE(random_state=0).fit_resample(X_train, y_train)
+
         # Initialize and fit the PCA object, and transform the training and testing data
         pca = PCA(n_components=0.95, svd_solver='full', random_state=0)
 
         X_train = pca.fit_transform(X_train)
         X_test = pca.transform(X_test)
-
-        # Cast score attribute as binary 'pass' (0) / 'fail' (1)
-        y_train = train['score'].apply(lambda x: 0 if x >= 40 else 1)
-        y_test = test['score'].apply(lambda x: 0 if x >= 40 else 1)
 
         for clf in classifiers:
 
@@ -248,47 +262,20 @@ for mod in modules:
             ##################################################
             ##################################################
 
-            num_enc_feats = int(round(X_train.shape[0] ** 0.5))
-
-            input_dim = Input(shape = (X_train.shape[1],))
-            
-            encoded1 = Dense(128, activation = 'relu')(input_dim)
-            encoded2 = Dense(32, activation = 'relu')(encoded1)
-            encoded3 = Dense(num_enc_feats, activation = 'relu')(encoded2)
-
-            decoded1 = Dense(32, activation = 'relu')(encoded3)
-            decoded2 = Dense(128, activation = 'relu')(decoded1)
-            decoded3 = Dense(X_train.shape[1], activation = 'relu')(decoded2)
-            
-            autoencoder = Model(inputs = input_dim, outputs = decoded3)
-
-            autoencoder.compile(optimizer = 'adam', loss = 'binary_crossentropy',  metrics=['accuracy'])
-
-            autoencoder.fit(X_train, X_train, epochs = 10, batch_size = 10, shuffle = False, validation_data = (X_test, X_test))
-            
-            encoder = Model(inputs = input_dim, outputs = encoded3)
-            encoded_input = Input(shape = (num_enc_feats, ))
-            
-            encoded_train = pd.DataFrame(encoder.predict(X_train))
-            encoded_train = encoded_train.add_prefix('feature_')
-
-            encoded_test = pd.DataFrame(encoder.predict(X_test))
-            encoded_test = encoded_test.add_prefix('feature_')
-            
             model = Sequential()
-            model.add(Dense(100, input_dim=num_enc_feats, kernel_initializer='normal', activation='relu'))
+
+            model.add(Dense(100, input_dim=X_train.shape[1], kernel_initializer='normal', activation='relu'))
             model.add(Dense(75, kernel_initializer='normal', activation='relu'))
             model.add(Dense(100, kernel_initializer='normal', activation='relu'))
             model.add(Dense(75, kernel_initializer='normal', activation='relu'))
-            model.add(Dense(100, kernel_initializer='normal', activation='relu'))
-            
+            model.add(Dense(100, kernel_initializer='normal', activation='relu'))      
             model.add(Dense(1, kernel_initializer='normal', activation='sigmoid'))
             
             model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
             
-            model.fit(encoded_train, y_train, epochs=10, batch_size=10)
-
-            y_hat = model.predict(encoded_test)
+            model.fit(X_train, y_train, epochs=10, batch_size=10, verbose=0)
+            
+            y_hat = model.predict(X_test)
             y_hat = [round(x[0]) for x in y_hat]
 
             ##################################################
@@ -328,7 +315,7 @@ for mod in modules:
                 fscore = (2 * tp) / ((2 * tp) + tn + fp + fn)
 
             # Report progress and results
-            print('\n[ {0} : {1} : {2} : PCA ]'.format(mod.upper(), atbt.upper(), clf.upper()))
+            print('\n[ {0} : {1} : {2} : SMTOE+PCA ]'.format(mod.upper(), atbt.upper(), clf.upper()))
             print('+----------------------+')
             print('| ACC:    \t{0:.4f} |'.format(accuracy))
             print('| FSCORE: \t{0:.4f} |'.format(fscore))
@@ -344,15 +331,15 @@ for mod in modules:
             print('\n\t( T {0} : {1} : {2} = {3:.2f} s / {4:.2f} m / {5:.2f} h )'.format(mod.upper(), atbt.upper(), clf.upper(), clf_s, clf_m, clf_h))
 
             # Write results to appropriate file
-            if not os.path.exists(f'./nu_results/{mod}_ae-pca_results.csv'):
-                with open(f'./nu_results/{mod}_ae-pca_results.csv', 'w') as file:
+            if not os.path.exists(f'./nu_results/{mod}_ff-smote+pca_results.csv'):
+                with open(f'./nu_results/{mod}_ff-smote+pca_results.csv', 'w') as file:
                     file.write(f'module,attributes,classifier,technique,metric,score\n')
             
-            with open(f'./nu_results/{mod}_ae-pca_results.csv', 'a') as file:
-                file.write(f'{mod},{atbt},{clf},pca,accuracy,{accuracy}\n')
-                file.write(f'{mod},{atbt},{clf},pca,fscore,{fscore}\n')
-                file.write(f'{mod},{atbt},{clf},pca,precision,{precision}\n')
-                file.write(f'{mod},{atbt},{clf},pca,recall,{recall}\n')
+            with open(f'./nu_results/{mod}_ff-smote+pca_results.csv', 'a') as file:
+                file.write(f'{mod},{atbt},{clf},smote+pca,accuracy,{accuracy}\n')
+                file.write(f'{mod},{atbt},{clf},smote+pca,fscore,{fscore}\n')
+                file.write(f'{mod},{atbt},{clf},smote+pca,precision,{precision}\n')
+                file.write(f'{mod},{atbt},{clf},smote+pca,recall,{recall}\n')
         
         # Record end time and report runtime for the attribute subset
         atbt_end = time.time()

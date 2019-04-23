@@ -128,8 +128,6 @@ activity_attributes_by_interval = ['due_vs_submission_date',
 
 modules = ['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg']
 
-modules = ['fff', 'ggg']
-
 attributes = {'asmt': assessment_attributes,
               'stdnt': student_attributes,
               'abd': activity_attributes_by_days,
@@ -142,14 +140,14 @@ attributes = {'asmt': assessment_attributes,
               'asmt_stdnt_abd': assessment_attributes + student_attributes + activity_attributes_by_days,
               'asmt_stdnt_abi': assessment_attributes + student_attributes + activity_attributes_by_interval}
 
-classifiers = ['ae']
+classifiers = ['ff']
 
 if not os.path.exists('./nu_results'):
     os.mkdir('./nu_results')
 
 for mod in modules:
-    if os.path.exists(f'./nu_results/{mod}_ae-smote_results.csv'):
-        os.remove(f'./nu_results/{mod}_ae-smote_results.csv')
+    if os.path.exists(f'./nu_results/{mod}_ff-smote+ae_results.csv'):
+        os.remove(f'./nu_results/{mod}_ff-smote+ae_results.csv')
 
 for mod in modules:
 
@@ -247,7 +245,7 @@ for mod in modules:
             ##################################################
             ##################################################
 
-            num_enc_feats = int(round(X_train.shape[0] ** 0.5))
+            num_enc_feats = int(round(X_train.shape[1] ** 0.5))
 
             input_dim = Input(shape = (X_train.shape[1],))
             
@@ -327,7 +325,7 @@ for mod in modules:
                 fscore = (2 * tp) / ((2 * tp) + tn + fp + fn)
 
             # Report progress and results
-            print('\n[ {0} : {1} : {2} : SMOTE ]'.format(mod.upper(), atbt.upper(), clf.upper()))
+            print('\n[ {0} : {1} : {2} : SMOTE+AE ]'.format(mod.upper(), atbt.upper(), clf.upper()))
             print('+----------------------+')
             print('| ACC:    \t{0:.4f} |'.format(accuracy))
             print('| FSCORE: \t{0:.4f} |'.format(fscore))
@@ -343,15 +341,15 @@ for mod in modules:
             print('\n\t( T {0} : {1} : {2} = {3:.2f} s / {4:.2f} m / {5:.2f} h )'.format(mod.upper(), atbt.upper(), clf.upper(), clf_s, clf_m, clf_h))
 
             # Write results to appropriate file
-            if not os.path.exists(f'./nu_results/{mod}_ae-smote_results.csv'):
-                with open(f'./nu_results/{mod}_ae-smote_results.csv', 'w') as file:
+            if not os.path.exists(f'./nu_results/{mod}_ff-smote+ae_results.csv'):
+                with open(f'./nu_results/{mod}_ff-smote+ae_results.csv', 'w') as file:
                     file.write(f'module,attributes,classifier,technique,metric,score\n')
             
-            with open(f'./nu_results/{mod}_ae-smote_results.csv', 'a') as file:
-                file.write(f'{mod},{atbt},{clf},smote,accuracy,{accuracy}\n')
-                file.write(f'{mod},{atbt},{clf},smote,fscore,{fscore}\n')
-                file.write(f'{mod},{atbt},{clf},smote,precision,{precision}\n')
-                file.write(f'{mod},{atbt},{clf},smote,recall,{recall}\n')
+            with open(f'./nu_results/{mod}_ff-smote+ae_results.csv', 'a') as file:
+                file.write(f'{mod},{atbt},{clf},smote+ae,accuracy,{accuracy}\n')
+                file.write(f'{mod},{atbt},{clf},smote+ae,fscore,{fscore}\n')
+                file.write(f'{mod},{atbt},{clf},smote+ae,precision,{precision}\n')
+                file.write(f'{mod},{atbt},{clf},smote+ae,recall,{recall}\n')
         
         # Record end time and report runtime for the attribute subset
         atbt_end = time.time()

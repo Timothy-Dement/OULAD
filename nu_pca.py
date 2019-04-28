@@ -229,114 +229,116 @@ for mod in modules:
         X_train = pca.fit_transform(X_train)
         X_test = pca.transform(X_test)
 
+        print(X_train.shape)
+
         # Cast score attribute as binary 'pass' (0) / 'fail' (1)
         y_train = train['score'].apply(lambda x: 0 if x >= 40 else 1)
         y_test = test['score'].apply(lambda x: 0 if x >= 40 else 1)
 
-        for clf in classifiers:
+#         for clf in classifiers:
 
-            # Record start time for the classifier
-            clf_start = time.time()
+#             # Record start time for the classifier
+#             clf_start = time.time()
 
-            # Initialize the appropriate classifier
-            model = None
+#             # Initialize the appropriate classifier
+#             model = None
 
-            if clf == 'dt':
-                model = DecisionTreeClassifier(random_state=0)
-            elif clf == 'knn':
-                model = KNeighborsClassifier(n_jobs=-1)
-            elif clf == 'nb':
-                model = GaussianNB()
-            elif clf == 'nn':
-                model = MLPClassifier(random_state=0)
-            elif clf == 'rf':
-                model = RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=0)
-            elif clf == 'svm':
-                model = SVC(gamma='auto', random_state=0)
+#             if clf == 'dt':
+#                 model = DecisionTreeClassifier(random_state=0)
+#             elif clf == 'knn':
+#                 model = KNeighborsClassifier(n_jobs=-1)
+#             elif clf == 'nb':
+#                 model = GaussianNB()
+#             elif clf == 'nn':
+#                 model = MLPClassifier(random_state=0)
+#             elif clf == 'rf':
+#                 model = RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=0)
+#             elif clf == 'svm':
+#                 model = SVC(gamma='auto', random_state=0)
 
-            # Fit the classifier to the training data
-            model.fit(X_train, y_train)
+#             # Fit the classifier to the training data
+#             model.fit(X_train, y_train)
 
-            # Predict classes for the test set
-            y_hat = model.predict(X_test)
+#             # Predict classes for the test set
+#             y_hat = model.predict(X_test)
 
-            # Generate the confusion matrix for the predictions
-            tn, fp, fn, tp = confusion_matrix(y_true=y_test, y_pred=y_hat).ravel()
+#             # Generate the confusion matrix for the predictions
+#             tn, fp, fn, tp = confusion_matrix(y_true=y_test, y_pred=y_hat).ravel()
 
-            # Calculate performance metrics from the confusion matrix
-            accuracy = None
-            precision = None
-            recall = None
-            fscore = None
+#             # Calculate performance metrics from the confusion matrix
+#             accuracy = None
+#             precision = None
+#             recall = None
+#             fscore = None
 
-            # Accuracy (account for divide-by-zero)
-            if (tp + tn + fp + fn) == 0:
-                accuracy = 0.0
-            else:
-                accuracy = (tp + tn) / (tp + tn + fp + fn)
+#             # Accuracy (account for divide-by-zero)
+#             if (tp + tn + fp + fn) == 0:
+#                 accuracy = 0.0
+#             else:
+#                 accuracy = (tp + tn) / (tp + tn + fp + fn)
 
-            # Precision (account for divide-by-zero)
-            if (tp + fp) == 0:
-                precision = 0.0
-            else:
-                precision = (tp) / (tp + fp)
+#             # Precision (account for divide-by-zero)
+#             if (tp + fp) == 0:
+#                 precision = 0.0
+#             else:
+#                 precision = (tp) / (tp + fp)
 
-            # Recall (account for divide-by-zero)
-            if (tp + fn) == 0:
-                recall = 0.0
-            else:
-                recall = (tp) / (tp + fn)
+#             # Recall (account for divide-by-zero)
+#             if (tp + fn) == 0:
+#                 recall = 0.0
+#             else:
+#                 recall = (tp) / (tp + fn)
 
-            # F-Score (account for divide-by-zero)
-            if ((2 * tp) + tn + fp + fn) == 0:
-                fscore = 0.0
-            else:
-                fscore = (2 * tp) / ((2 * tp) + tn + fp + fn)
+#             # F-Score (account for divide-by-zero)
+#             if ((2 * tp) + tn + fp + fn) == 0:
+#                 fscore = 0.0
+#             else:
+#                 fscore = (2 * tp) / ((2 * tp) + tn + fp + fn)
 
-            # Report progress and results
-            print('\n[ {0} : {1} : {2} : PCA ]'.format(mod.upper(), atbt.upper(), clf.upper()))
-            print('+----------------------+')
-            print('| ACC:    \t{0:.4f} |'.format(accuracy))
-            print('| FSCORE: \t{0:.4f} |'.format(fscore))
-            print('| PREC:   \t{0:.4f} |'.format(precision))
-            print('| REC:    \t{0:.4f} |'.format(recall))
-            print('+----------------------+')
+#             # Report progress and results
+#             print('\n[ {0} : {1} : {2} : PCA ]'.format(mod.upper(), atbt.upper(), clf.upper()))
+#             print('+----------------------+')
+#             print('| ACC:    \t{0:.4f} |'.format(accuracy))
+#             print('| FSCORE: \t{0:.4f} |'.format(fscore))
+#             print('| PREC:   \t{0:.4f} |'.format(precision))
+#             print('| REC:    \t{0:.4f} |'.format(recall))
+#             print('+----------------------+')
 
-            # Record end time and report runtime for the classifier
-            clf_end = time.time()
-            clf_s = clf_end - clf_start
-            clf_m = clf_s / 60
-            clf_h = clf_m / 60
-            print('\n\t( T {0} : {1} : {2} = {3:.2f} s / {4:.2f} m / {5:.2f} h )'.format(mod.upper(), atbt.upper(), clf.upper(), clf_s, clf_m, clf_h))
+#             # Record end time and report runtime for the classifier
+#             clf_end = time.time()
+#             clf_s = clf_end - clf_start
+#             clf_m = clf_s / 60
+#             clf_h = clf_m / 60
+#             print('\n\t( T {0} : {1} : {2} = {3:.2f} s / {4:.2f} m / {5:.2f} h )'.format(mod.upper(), atbt.upper(), clf.upper(), clf_s, clf_m, clf_h))
 
-            # Write results to appropriate file
-            if not os.path.exists(f'./nu_results/{mod}_pca_results.csv'):
-                with open(f'./nu_results/{mod}_pca_results.csv', 'w') as file:
-                    file.write(f'module,attributes,classifier,technique,metric,score\n')
+#             # Write results to appropriate file
+#             if not os.path.exists(f'./nu_results/{mod}_pca_results.csv'):
+#                 with open(f'./nu_results/{mod}_pca_results.csv', 'w') as file:
+#                     file.write(f'module,attributes,classifier,technique,metric,score\n')
             
-            with open(f'./nu_results/{mod}_pca_results.csv', 'a') as file:
-                file.write(f'{mod},{atbt},{clf},pca,accuracy,{accuracy}\n')
-                file.write(f'{mod},{atbt},{clf},pca,fscore,{fscore}\n')
-                file.write(f'{mod},{atbt},{clf},pca,precision,{precision}\n')
-                file.write(f'{mod},{atbt},{clf},pca,recall,{recall}\n')
+#             with open(f'./nu_results/{mod}_pca_results.csv', 'a') as file:
+#                 file.write(f'{mod},{atbt},{clf},pca,accuracy,{accuracy}\n')
+#                 file.write(f'{mod},{atbt},{clf},pca,fscore,{fscore}\n')
+#                 file.write(f'{mod},{atbt},{clf},pca,precision,{precision}\n')
+#                 file.write(f'{mod},{atbt},{clf},pca,recall,{recall}\n')
         
-        # Record end time and report runtime for the attribute subset
-        atbt_end = time.time()
-        atbt_s = atbt_end - atbt_start
-        atbt_m = atbt_s / 60
-        atbt_h = atbt_m / 60
-        print('\n\t( T {0} : {1} = {2:.2f} s / {3:.2f} m / {4:.2f} h )'.format(mod.upper(), atbt.upper(), atbt_s, atbt_m, atbt_h))
+#         # Record end time and report runtime for the attribute subset
+#         atbt_end = time.time()
+#         atbt_s = atbt_end - atbt_start
+#         atbt_m = atbt_s / 60
+#         atbt_h = atbt_m / 60
+#         print('\n\t( T {0} : {1} = {2:.2f} s / {3:.2f} m / {4:.2f} h )'.format(mod.upper(), atbt.upper(), atbt_s, atbt_m, atbt_h))
 
-    # Record end time and report runtime for for the module
-    mod_end = time.time()
-    mod_s = mod_end - mod_start
-    mod_m = mod_s / 60
-    mod_h = mod_m / 60
-    print('\n\t( T {0} = {1:.2f} s / {2:.2f} m / {3:.2f} h )'.format(mod.upper(), mod_s, mod_m, mod_h))
+#     # Record end time and report runtime for for the module
+#     mod_end = time.time()
+#     mod_s = mod_end - mod_start
+#     mod_m = mod_s / 60
+#     mod_h = mod_m / 60
+#     print('\n\t( T {0} = {1:.2f} s / {2:.2f} m / {3:.2f} h )'.format(mod.upper(), mod_s, mod_m, mod_h))
 
-# Record overall end time and report overall runtime
-all_end = time.time()
-all_s = all_end - all_start
-all_m = all_s / 60
-all_h = all_m / 60
-print('\n\t( T = {0:.2f} s / {1:.2f} m / {2:.2f} h )'.format(all_s, all_m, all_h))
+# # Record overall end time and report overall runtime
+# all_end = time.time()
+# all_s = all_end - all_start
+# all_m = all_s / 60
+# all_h = all_m / 60
+# print('\n\t( T = {0:.2f} s / {1:.2f} m / {2:.2f} h )'.format(all_s, all_m, all_h))
